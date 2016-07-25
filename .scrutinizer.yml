@@ -13,9 +13,6 @@ build:
           - psql -c "create user test with password 'test';"
           - psql -c "create database test owner=test;"
           - psql -c "create schema test authorization test;"
-          - echo 'localhost:5432:test:test:test' >> ~/.pgpass
-          - chmod 600 ~/.pgpass
-          - cat test/ddl/create_tables.sql | psql -Utest test
 
         override:
             -
