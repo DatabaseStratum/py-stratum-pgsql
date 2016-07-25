@@ -12,8 +12,9 @@ addons:
   
 install:
   - cd $HOME
-  - pip3 install psycopg2
   - pip3 install cleo
+  - pip3 install psycopg2
+  - pip3 install pystratum
 
 before_script:
   - psql --version
