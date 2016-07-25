@@ -23,5 +23,5 @@ before_script:
 
 script: 
   - cd $TRAVIS_BUILD_DIR
-  - cat test/pgsql/ddl/create_tables.sql | psql -Utest test
+  - cat test/ddl/create_tables.sql | psql -Utest test
   - python3 -m unittest test/*.py

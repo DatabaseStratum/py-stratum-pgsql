@@ -5,7 +5,6 @@ Copyright 2015-2016 Set Based IT Consultancy
 
 Licence MIT
 """
-# ----------------------------------------------------------------------------------------------------------------------
 import abc
 
 from pystratum.wrapper.Wrapper import Wrapper

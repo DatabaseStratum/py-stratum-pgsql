@@ -9,14 +9,14 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='PyStratum',
+    name='PyStratum-pgSQL',
 
     version='0.9.21',
 
     description='A stored procedure/function loader and wrapper generator for PostgresSQL',
     long_description=long_description,
 
-    url='https://github.com/SetBased/py-stratum',
+    url='https://github.com/SetBased/py-stratum-pgsql',
 
     author='Set Based IT Consultancy',
     author_email='info@setbased.nl',
@@ -39,15 +39,9 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
 
-    keywords='stored procedures, PL/pgSQL, PostgresSQL',
+    keywords='stored procedures, loader, wrapper, PL/pgSQL, PostgresSQL',
 
     packages=find_packages(exclude=['build', 'test']),
 
     install_requires=['cleo==0.4.1', 'pystratum'],
-
-    entry_points={
-        'console_scripts': [
-            'pystratum = pystratum:main',
-        ],
-    }
 )

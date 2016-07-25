@@ -45,7 +45,7 @@ class MagicConstantTest(StratumTestCase):
         Test constant __DIR__. Must return name of the folder where the source file of routine the is located.
         """
         dir_cur_file = os.path.dirname(os.path.abspath(__file__))
-        dir_name = os.path.realpath(dir_cur_file + '/psql')
+        dir_name = os.path.realpath(dir_cur_file + '/psql/')
         ret = DataLayer.tst_magic_constant04()
         self.assertEqual(dir_name, ret)
 

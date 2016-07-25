@@ -5,7 +5,6 @@ Copyright 2015-2016 Set Based IT Consultancy
 
 Licence MIT
 """
-# ----------------------------------------------------------------------------------------------------------------------
 from pystratum.wrapper.RowsWithKeyWrapper import RowsWithKeyWrapper as BaseRowsWithKeyWrapper
 
 from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper

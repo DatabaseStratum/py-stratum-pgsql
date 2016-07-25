@@ -73,7 +73,7 @@ order by table_schema
         :param dict pystratum_old_metadata: The old metadata of the stored routine from PyStratum.
         :param dict rdbms_old_metadata:  The old metadata of the stored routine from PostgreSQL.
 
-        :rtype: pystratum.pgsql.PgSqlRoutineLoaderHelper.PgSqlRoutineLoaderHelper
+        :rtype: pystratum_pgsql.PgSqlRoutineLoaderHelper.PgSqlRoutineLoaderHelper
         """
         return PgSqlRoutineLoaderHelper(self._source_file_names[routine_name],
                                         self._source_file_encoding,

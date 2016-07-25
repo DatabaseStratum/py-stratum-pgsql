@@ -7,7 +7,7 @@ Licence MIT
 """
 from pystratum import Connection
 
-from pystratum_pgsql import StaticDataLayer
+from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 
 
 class PgSqlConnection(Connection.Connection):
