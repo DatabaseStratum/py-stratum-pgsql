@@ -10,7 +10,7 @@ import unittest
 from cleo import CommandTester
 from pystratum.application.PyStratumApplication import PyStratumApplication
 
-from test.DataLayer import DataLayer
+from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 
 
 class AAATest(unittest.TestCase):
@@ -23,11 +23,12 @@ class AAATest(unittest.TestCase):
         """
         Create tables.
         """
-        DataLayer.connect('localhost', 'test', 'test', 'test', 'test', 5432)
+        StaticDataLayer.connect('localhost', 'test', 'test', 'test', 'test', 5432)
         with open('test/ddl/create_tables.sql') as file:
             sql = file.read()
 
-        DataLayer.execute_none(sql)
+        StaticDataLayer.execute_none(sql)
+        StaticDataLayer.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
     def test1(self):
