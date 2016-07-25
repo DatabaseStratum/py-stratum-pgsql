@@ -12,8 +12,7 @@ build:
         before:
           - psql -c "create user test with password 'test';"
           - psql -c "create database test owner=test;"
-          - psql -c "create schema test authorization test;"
-          - psql -c "grant usage on schema test to test;"
+          - psql -c "create schema test authorization test;" test
 
         override:
             -
