@@ -43,5 +43,5 @@ setup(
 
     packages=find_packages(exclude=['build', 'test']),
 
-    install_requires=['cleo==0.4.1', 'pystratum'],
+    install_requires=['pystratum', 'psycopg2'],
 )
