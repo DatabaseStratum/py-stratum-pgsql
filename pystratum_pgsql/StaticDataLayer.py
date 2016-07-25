@@ -106,7 +106,7 @@ class StaticDataLayer:
                                                       host=host,
                                                       port=port)
         cursor = StaticDataLayer.connection.cursor()
-        cursor.execute('set search_path to %s;', (schema,))
+        cursor.execute('set search_path to %s', (schema,))
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -358,7 +358,7 @@ class StaticDataLayer:
     @staticmethod
     def execute_sp_table(sql, *params):
         # todo methods for showing table
-        raise NotImplementedError
+        raise NotImplementedError()
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
