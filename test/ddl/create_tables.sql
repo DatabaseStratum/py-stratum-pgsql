@@ -7,9 +7,9 @@
  * @link
  */
 -- ---------------------------------------------------------------------------------------------------------------------
-drop table if exists "tst_foo1";
+drop table if exists test."tst_foo1";
 
-CREATE TABLE "tst_foo1" (
+CREATE TABLE test."tst_foo1" (
   "tst_bigint" BIGINT,
   "tst_int" INTEGER,
   "tst_smallint" SMALLINT,
@@ -29,9 +29,9 @@ CREATE TABLE "tst_foo1" (
 );
 
 -- ---------------------------------------------------------------------------------------------------------------------
-drop table if exists "tst_foo2";
+drop table if exists test."tst_foo2";
 
-CREATE TABLE "tst_foo2" (
+CREATE TABLE test."tst_foo2" (
   "tst_c00" INTEGER NOT NULL,
   "tst_c01" VARCHAR(10),
   "tst_c02" VARCHAR(10),
@@ -63,9 +63,9 @@ values( 1
 ;
 
 -- ---------------------------------------------------------------------------------------------------------------------
-drop table if exists "tst_table";
+drop table if exists test."tst_table";
 
-CREATE TABLE "tst_table" (
+CREATE TABLE test."tst_table" (
   "tst_c00" VARCHAR(20) NOT NULL,
   "tst_c01" INTEGER,
   "tst_c02" REAL,
@@ -100,9 +100,9 @@ values( 'Hello'
 ;
 
 -- ---------------------------------------------------------------------------------------------------------------------
-drop table if exists "tst_label";
+drop table if exists test."tst_label";
 
-CREATE TABLE "tst_label" (
+CREATE TABLE test."tst_label" (
   "tst_id" BIGSERIAL,
   "tst_test" VARCHAR(40) NOT NULL,
   "tst_label" VARCHAR(40),
