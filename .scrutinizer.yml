@@ -1,13 +1,9 @@
 before_commands:
-    - pip3 install cleo
+    - sudo pip3 install cleo
+    - sudo pip3 install coverage
+    - sudo pip3 install psycopg2
 
 build:
-    dependencies:
-        before:
-          - pip3 install cleo
-          - pip3 install coverage
-          - pip3 install psycopg2
-
     tests:
         before:
           - psql -c "create user test with password 'test';"
