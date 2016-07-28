@@ -146,7 +146,7 @@ and   TABLE_NAME   = '%s'""" % self._table_name
         """
         Extracts the designation type of the stored routine. Returns True on success. Otherwise returns False.
 
-        :rtype bool:
+        :rtype: bool
         """
         ret = True
 

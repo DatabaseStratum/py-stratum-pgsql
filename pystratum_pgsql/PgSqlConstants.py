@@ -258,7 +258,7 @@ where   nullif(\"{3!s}\",'') is not null""".format(table['id'],
 
         :param dict column: The column of which the field is based.
 
-        :rtype int:
+        :rtype: int
         """
         types_length = {'bigint':                      21,
                         'integer':                     11,
