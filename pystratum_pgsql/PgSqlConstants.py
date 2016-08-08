@@ -218,7 +218,7 @@ and   t1.table_schema = current_schema()
 and   t1.column_default like 'nextval(%%)'
 and   t2.table_catalog = current_database()
 and   t2.table_schema  = current_schema()
-and   t2.column_name similar to '{0}'
+and   t2.column_name ~ '{0}'
 """.format(regex)
 
         tables = StaticDataLayer.execute_rows(query_string)
