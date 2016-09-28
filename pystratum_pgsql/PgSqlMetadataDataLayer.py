@@ -7,10 +7,11 @@ Licence MIT
 """
 import os
 
+from pystratum.MetadataDataLayer import MetadataDataLayer
 from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 
 
-class MetadataDataLayer:
+class PgSqlMetadataDataLayer(MetadataDataLayer):
     """
     Data layer for retrieving metadata and loading stored routines.
     """
@@ -20,32 +21,6 @@ class MetadataDataLayer:
 
     :type: pystratum_pgsql.StaticDataLayer.StaticDataLayer|None
     """
-
-    io = None
-    """
-    The output decorator.
-
-    :type: pystratum.style.PyStratumStyle.PyStratumStyle|None
-    """
-
-    # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def __log_query(query):
-        """
-        Logs the query on the console.
-
-        :param str query: The query.
-        """
-        query = query.strip()
-
-        if os.linesep in query:
-            # Query is a multi line query
-            MetadataDataLayer.io.log_very_verbose('Executing query:')
-            MetadataDataLayer.io.log_very_verbose('<sql>{0}</sql>'.format(query))
-        else:
-            # Query is a single line query.
-            MetadataDataLayer.io.log_very_verbose('Executing query: <sql>{0}</sql>'.format(query))
-
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
     def call_stored_routine(routine_name):
@@ -58,7 +33,7 @@ class MetadataDataLayer:
         """
         sql = 'call {0}()'.format(routine_name)
 
-        return MetadataDataLayer.execute_none(sql)
+        return PgSqlMetadataDataLayer.execute_none(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -76,7 +51,7 @@ information_schema.tables
 where TABLE_SCHEMA = database()
 and   TABLE_NAME   = '{0}'""" % table_name
 
-        return MetadataDataLayer.execute_none(sql)
+        return PgSqlMetadataDataLayer.execute_none(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -84,7 +59,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
         """
         Commits the current transaction.
         """
-        MetadataDataLayer.__dl.commit()
+        PgSqlMetadataDataLayer.__dl.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -99,8 +74,8 @@ and   TABLE_NAME   = '{0}'""" % table_name
         :param str password:
         :param int port:
         """
-        MetadataDataLayer.__dl = StaticDataLayer()
-        MetadataDataLayer.__dl.connect(host, database, schema, user, password, port)
+        PgSqlMetadataDataLayer.__dl = StaticDataLayer()
+        PgSqlMetadataDataLayer.__dl.connect(host, database, schema, user, password, port)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -114,7 +89,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
         """
         sql = 'describe `{0}`'.format(table_name)
 
-        return MetadataDataLayer.execute_rows(sql)
+        return PgSqlMetadataDataLayer.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -122,7 +97,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
         """
         Disconnects from the MySQL instance.
         """
-        MetadataDataLayer.__dl.disconnect()
+        PgSqlMetadataDataLayer.__dl.disconnect()
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -136,7 +111,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
         """
         sql = 'drop {0} if exists {1}({2})'.format(routine_type, routine_name, routine_args)
 
-        MetadataDataLayer.execute_none(sql)
+        PgSqlMetadataDataLayer.execute_none(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -148,7 +123,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
         """
         sql = 'drop temporary table `{0}`'.format(table_name)
 
-        MetadataDataLayer.execute_none(sql)
+        PgSqlMetadataDataLayer.execute_none(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -160,9 +135,9 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
         :rtype: int
         """
-        MetadataDataLayer.__log_query(query)
+        PgSqlMetadataDataLayer._log_query(query)
 
-        return MetadataDataLayer.__dl.execute_none(query)
+        return PgSqlMetadataDataLayer.__dl.execute_none(query)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -174,9 +149,9 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
         :rtype: list[dict[str,Object]]
         """
-        MetadataDataLayer.__log_query(query)
+        PgSqlMetadataDataLayer._log_query(query)
 
-        return MetadataDataLayer.__dl.execute_rows(query)
+        return PgSqlMetadataDataLayer.__dl.execute_rows(query)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -188,9 +163,9 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
         :rtype: Object
         """
-        MetadataDataLayer.__log_query(query)
+        PgSqlMetadataDataLayer._log_query(query)
 
-        return MetadataDataLayer.__dl.execute_singleton1(query)
+        return PgSqlMetadataDataLayer.__dl.execute_singleton1(query)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -236,7 +211,7 @@ union all
 )
 """
 
-        return MetadataDataLayer.execute_rows(sql)
+        return PgSqlMetadataDataLayer.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -262,7 +237,7 @@ and   t2.table_schema  = current_schema()
 and   t2.column_name ~ '{0}'
 """.format(regex)
 
-        return MetadataDataLayer.execute_rows(sql)
+        return PgSqlMetadataDataLayer.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -284,7 +259,7 @@ where   nullif(\"{1}\",'') is not null""".format(id_column_name,
                                                  label_column_name,
                                                  table_name)
 
-        return MetadataDataLayer.execute_rows(sql)
+        return PgSqlMetadataDataLayer.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -310,7 +285,7 @@ and   t1.routine_schema  = current_schema()
 and   t1.routine_name    = '%s'
 order by t2.ordinal_position""" % routine_name
 
-        return MetadataDataLayer.execute_rows(sql)
+        return PgSqlMetadataDataLayer.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -340,6 +315,6 @@ group by t1.routine_name
 order by routine_name
 """
 
-        return MetadataDataLayer.execute_rows(sql)
+        return PgSqlMetadataDataLayer.execute_rows(sql)
 
 # ----------------------------------------------------------------------------------------------------------------------

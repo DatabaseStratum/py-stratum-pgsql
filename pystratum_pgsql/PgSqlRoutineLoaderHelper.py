@@ -8,7 +8,7 @@ Licence MIT
 import re
 
 from pystratum.RoutineLoaderHelper import RoutineLoaderHelper
-from pystratum_pgsql.MetadataDataLayer import MetadataDataLayer
+from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
 from pystratum_pgsql.helper.PgSqlDataTypeHelper import PgSqlDataTypeHelper
 
 
@@ -114,21 +114,21 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         self._unset_magic_constants()
         self._drop_routine()
 
-        MetadataDataLayer.commit()
-        MetadataDataLayer.execute_none(routine_source)
-        MetadataDataLayer.commit()
+        PgSqlMetadataDataLayer.commit()
+        PgSqlMetadataDataLayer.execute_none(routine_source)
+        PgSqlMetadataDataLayer.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
     def get_bulk_insert_table_columns_info(self):
         """
         Gets the column names and column types of the current table for bulk insert.
         """
-        table_is_non_temporary = MetadataDataLayer.check_table_exists(self._table_name)
+        table_is_non_temporary = PgSqlMetadataDataLayer.check_table_exists(self._table_name)
 
         if not table_is_non_temporary:
-            MetadataDataLayer.call_stored_routine(self._routine_name)
+            PgSqlMetadataDataLayer.call_stored_routine(self._routine_name)
 
-        columns = MetadataDataLayer.describe_table(self._table_name)
+        columns = PgSqlMetadataDataLayer.describe_table(self._table_name)
 
         tmp_column_types = []
         tmp_fields = []
@@ -144,7 +144,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         n2 = len(self._columns)
 
         if not table_is_non_temporary:
-            MetadataDataLayer.drop_temporary_table(self._table_name)
+            PgSqlMetadataDataLayer.drop_temporary_table(self._table_name)
 
         if n1 != n2:
             raise Exception("Number of fields %d and number of columns %d don't match." % (n1, n2))
@@ -199,7 +199,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         """
         Retrieves information about the stored routine parameters from the meta data of PostgreSQL.
         """
-        routine_parameters = MetadataDataLayer.get_routine_parameters(self._routine_name)
+        routine_parameters = PgSqlMetadataDataLayer.get_routine_parameters(self._routine_name)
         for routine_parameter in routine_parameters:
             if routine_parameter['parameter_name']:
                 value = routine_parameter['column_type']
@@ -214,8 +214,8 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         Drops the stored routine if it exists.
         """
         if self._rdbms_old_metadata:
-            MetadataDataLayer.drop_stored_routine(self._rdbms_old_metadata['routine_type'],
-                                                  self._routine_name,
-                                                  self._rdbms_old_metadata['routine_args'])
+            PgSqlMetadataDataLayer.drop_stored_routine(self._rdbms_old_metadata['routine_type'],
+                                                       self._routine_name,
+                                                       self._rdbms_old_metadata['routine_args'])
 
 # ----------------------------------------------------------------------------------------------------------------------

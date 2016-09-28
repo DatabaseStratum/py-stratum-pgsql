@@ -7,7 +7,7 @@ Licence MIT
 """
 from pystratum.RoutineLoader import RoutineLoader
 
-from pystratum_pgsql.MetadataDataLayer import MetadataDataLayer
+from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
 from pystratum_pgsql.PgSqlConnection import PgSqlConnection
 from pystratum_pgsql.PgSqlRoutineLoaderHelper import PgSqlRoutineLoaderHelper
 
@@ -32,7 +32,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         """
         Selects schema, table, column names and the column type from MySQL and saves them as replace pairs.
         """
-        rows = MetadataDataLayer.get_all_table_columns()
+        rows = PgSqlMetadataDataLayer.get_all_table_columns()
         for row in rows:
             key = '@' + row['table_name'] + '.' + row['column_name'] + '%type@'
             key = key.lower()
@@ -63,7 +63,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         """
         Retrieves information about all stored routines in the current schema.
         """
-        rows = MetadataDataLayer.get_routines()
+        rows = PgSqlMetadataDataLayer.get_routines()
         self._rdbms_old_metadata = {}
         for row in rows:
             self._rdbms_old_metadata[row['routine_name']] = row
@@ -77,7 +77,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         for routine_name, values in self._rdbms_old_metadata.items():
             if routine_name not in self._source_file_names:
                 self._io.writeln("Dropping {0} <dbo>{1}</dbo>".format(values['routine_type'], routine_name))
-                MetadataDataLayer.drop_stored_routine(values['routine_type'], routine_name, values['routine_args'])
+                PgSqlMetadataDataLayer.drop_stored_routine(values['routine_type'], routine_name, values['routine_args'])
 
     # ------------------------------------------------------------------------------------------------------------------
     def _read_configuration_file(self, config_filename):
