@@ -10,8 +10,8 @@ import re
 
 from pystratum.Constants import Constants
 from pystratum.Util import Util
+from pystratum_pgsql.MetadataDataLayer import MetadataDataLayer
 from pystratum_pgsql.PgSqlConnection import PgSqlConnection
-from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 
 
 class PgSqlConstants(PgSqlConnection, Constants):
@@ -41,9 +41,9 @@ class PgSqlConstants(PgSqlConnection, Constants):
                 for line in f:
                     line_number += 1
                     if line != "\n":
-                        p = re.compile(r'\s*(?:([a-zA-Z0-9_]+)\.)?([a-zA-Z0-9_]+)\.'
-                                       r'([a-zA-Z0-9_]+)\s+(\d+)\s*(\*|[a-zA-Z0-9_]+)?\s*')
-                        matches = p.findall(line)
+                        prog = re.compile(r'\s*(?:([a-zA-Z0-9_]+)\.)?([a-zA-Z0-9_]+)\.'
+                                          r'([a-zA-Z0-9_]+)\s+(\d+)\s*(\*|[a-zA-Z0-9_]+)?\s*')
+                        matches = prog.findall(line)
 
                         if matches:
                             matches = matches[0]
@@ -79,43 +79,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
         """
         Retrieves metadata all columns in the MySQL schema.
         """
-        query = """
-(
-  select table_name
-  ,      column_name
-  ,      data_type
-  ,      character_maximum_length
-  ,      numeric_precision
-  ,      ordinal_position
-  from   information_schema.COLUMNS
-  where  table_catalog = current_database()
-  and    table_schema  = current_schema()
-  and    table_name  similar to '[a-zA-Z0-9_]*'
-  and    column_name similar to '[a-zA-Z0-9_]*'
-  order by table_name
-  ,        ordinal_position
-)
-
-union all
-
-(
-  select concat(table_schema,'.',table_name) table_name
-  ,      column_name
-  ,      data_type
-  ,      character_maximum_length
-  ,      numeric_precision
-  ,      ordinal_position
-  from   information_schema.COLUMNS
-  where  1=0 and table_catalog = current_database()
-  and    table_name  similar to '[a-zA-Z0-9_]*'
-  and    column_name similar to '[a-zA-Z0-9_]*'
-  order by table_schema
-  ,        table_name
-  ,        ordinal_position
-)
-"""
-        rows = StaticDataLayer.execute_rows(query)
-
+        rows = MetadataDataLayer.get_all_table_columns()
         for row in rows:
             # Enhance row with the actual length of the column.
             row['length'] = self.derive_field_length(row)
@@ -208,33 +172,9 @@ union all
 
         :param str regex: The regular expression for columns which we want to use.
         """
-        query_string = """
-select t1.table_name  "table_name"
-,      t1.column_name "id"
-,      t2.column_name "label"
-from       information_schema.columns t1
-inner join information_schema.columns t2 on t1.table_name = t2.table_name
-where t1.table_catalog = current_database()
-and   t1.table_schema = current_schema()
-and   t1.column_default like 'nextval(%%)'
-and   t2.table_catalog = current_database()
-and   t2.table_schema  = current_schema()
-and   t2.column_name ~ '{0}'
-""".format(regex)
-
-        tables = StaticDataLayer.execute_rows(query_string)
-
+        tables = MetadataDataLayer.get_label_tables(regex)
         for table in tables:
-            query_string = """
-select \"{0!s}\"  as id
-,      \"{1!s}\"  as label
-from   \"{2!s}\"
-where   nullif(\"{3!s}\",'') is not null""".format(table['id'],
-                                                   table['label'],
-                                                   table['table_name'],
-                                                   table['label'])
-
-            rows = StaticDataLayer.execute_rows(query_string)
+            rows = MetadataDataLayer.get_labels_from_table(table['table_name'], table['id'], table['label'])
             for row in rows:
                 self._labels[row['label']] = row['id']
 

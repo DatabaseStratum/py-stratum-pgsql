@@ -7,9 +7,9 @@ Licence MIT
 """
 from pystratum.RoutineLoader import RoutineLoader
 
+from pystratum_pgsql.MetadataDataLayer import MetadataDataLayer
 from pystratum_pgsql.PgSqlConnection import PgSqlConnection
 from pystratum_pgsql.PgSqlRoutineLoaderHelper import PgSqlRoutineLoaderHelper
-from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 
 
 class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
@@ -32,37 +32,11 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         """
         Selects schema, table, column names and the column type from MySQL and saves them as replace pairs.
         """
-        sql = """
-select table_name                                    "table_name"
-,      column_name                                   "column_name"
-,      udt_name                                      "column_type"
-,      null                                          "table_schema"
-from   information_schema.columns
-where  table_catalog = current_database()
-and    table_schema  = current_schema()
-
-union all
-
-select table_name                                    "table_name"
-,      column_name                                   "column_name"
-,      udt_name                                      "column_type"
-,      table_schema                                  "table_schema"
-from   information_schema.columns
-where  table_catalog = current_database()
-order by table_schema
-,        table_name
-,        column_name
-"""
-
-        rows = StaticDataLayer.execute_rows(sql)
-
+        rows = MetadataDataLayer.get_all_table_columns()
         for row in rows:
-            key = '@'
-            if row['table_schema']:
-                key += row['table_schema'] + '.'
-            key += row['table_name'] + '.' + row['column_name'] + '%type@'
+            key = '@' + row['table_name'] + '.' + row['column_name'] + '%type@'
             key = key.lower()
-            value = row['column_type']
+            value = row['data_type']
 
             self._replace_pairs[key] = value
 
@@ -89,27 +63,7 @@ order by table_schema
         """
         Retrieves information about all stored routines in the current schema.
         """
-        query = """
-select t1.routine_name                                                                        "routine_name"
-,      t1.routine_type                                                                        "routine_type"
-,      array_to_string(array_agg(case when (parameter_name is not null) then
-                                   concat(t2.parameter_mode, ' ',
-                                          t2.parameter_name, ' ',
-                                          t2.udt_name)
-                                 end order by t2.ordinal_position asc), ',')                  "routine_args"
-from            information_schema.routines   t1
-left outer join information_schema.parameters t2  on  t2.specific_catalog = t1.specific_catalog and
-                                                      t2.specific_schema  = t1.specific_schema and
-                                                      t2.specific_name    = t1.specific_name and
-                                                      t2.parameter_name   is not null
-where routine_catalog = current_database()
-and   routine_schema  = current_schema()
-group by t1.routine_name
-,        t1.routine_type
-order by routine_name
-"""
-
-        rows = StaticDataLayer.execute_rows(query)
+        rows = MetadataDataLayer.get_routines()
         self._rdbms_old_metadata = {}
         for row in rows:
             self._rdbms_old_metadata[row['routine_name']] = row
@@ -123,10 +77,7 @@ order by routine_name
         for routine_name, values in self._rdbms_old_metadata.items():
             if routine_name not in self._source_file_names:
                 self._io.writeln("Dropping {0} <dbo>{1}</dbo>".format(values['routine_type'], routine_name))
-                sql = "drop {0!s} if exists {1!s}({2!s})".format(values['routine_type'],
-                                                                 routine_name,
-                                                                 values['routine_args'])
-                StaticDataLayer.execute_none(sql)
+                MetadataDataLayer.drop_stored_routine(values['routine_type'], routine_name, values['routine_args'])
 
     # ------------------------------------------------------------------------------------------------------------------
     def _read_configuration_file(self, config_filename):

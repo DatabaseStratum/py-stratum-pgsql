@@ -6,8 +6,7 @@ Copyright 2015-2016 Set Based IT Consultancy
 Licence MIT
 """
 from pystratum import Connection
-
-from pystratum_pgsql.StaticDataLayer import StaticDataLayer
+from pystratum_pgsql.MetadataDataLayer import MetadataDataLayer
 
 
 class PgSqlConnection(Connection.Connection):
@@ -65,7 +64,7 @@ class PgSqlConnection(Connection.Connection):
         :type: str
         """
 
-        self.io = io
+        self._io = io
         """
         The output decorator.
 
@@ -77,12 +76,13 @@ class PgSqlConnection(Connection.Connection):
         """
         Connects to the PostgreSQL instance.
         """
-        StaticDataLayer.connect(self._host,
-                                self._database,
-                                self._schema,
-                                self._user,
-                                self._password,
-                                self._port)
+        MetadataDataLayer.io = self._io
+        MetadataDataLayer.connect(self._host,
+                                  self._database,
+                                  self._schema,
+                                  self._user,
+                                  self._password,
+                                  self._port)
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -90,7 +90,7 @@ class PgSqlConnection(Connection.Connection):
         """
         Disconnects from the PostgreSQL instance.
         """
-        StaticDataLayer.disconnect()
+        MetadataDataLayer.disconnect()
 
     # ------------------------------------------------------------------------------------------------------------------
     def _read_configuration_file(self, filename):

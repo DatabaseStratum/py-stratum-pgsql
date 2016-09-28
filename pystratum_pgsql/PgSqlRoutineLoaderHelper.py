@@ -6,10 +6,9 @@ Copyright 2015-2016 Set Based IT Consultancy
 Licence MIT
 """
 import re
-import sys
 
 from pystratum.RoutineLoaderHelper import RoutineLoaderHelper
-from pystratum_pgsql.StaticDataLayer import StaticDataLayer
+from pystratum_pgsql.MetadataDataLayer import MetadataDataLayer
 from pystratum_pgsql.helper.PgSqlDataTypeHelper import PgSqlDataTypeHelper
 
 
@@ -115,29 +114,21 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         self._unset_magic_constants()
         self._drop_routine()
 
-        StaticDataLayer.commit()
-        StaticDataLayer.execute_none(routine_source)
-        StaticDataLayer.commit()
+        MetadataDataLayer.commit()
+        MetadataDataLayer.execute_none(routine_source)
+        MetadataDataLayer.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
     def get_bulk_insert_table_columns_info(self):
         """
         Gets the column names and column types of the current table for bulk insert.
         """
-        query = """
-select 1 from
-information_schema.TABLES
-where TABLE_SCHEMA = database()
-and   TABLE_NAME   = '%s'""" % self._table_name
+        table_is_non_temporary = MetadataDataLayer.check_table_exists(self._table_name)
 
-        table_is_non_temporary = StaticDataLayer.execute_rows(query)
+        if not table_is_non_temporary:
+            MetadataDataLayer.call_stored_routine(self._routine_name)
 
-        if len(table_is_non_temporary) == 0:
-            query = 'call %s()' % self._routine_name
-            StaticDataLayer.execute_sp_none(query)
-
-        query = "describe `%s`" % self._table_name
-        columns = StaticDataLayer.execute_rows(query)
+        columns = MetadataDataLayer.describe_table(self._table_name)
 
         tmp_column_types = []
         tmp_fields = []
@@ -152,9 +143,8 @@ and   TABLE_NAME   = '%s'""" % self._table_name
 
         n2 = len(self._columns)
 
-        if len(table_is_non_temporary) == 0:
-            query = "drop temporary table `%s`" % self._table_name
-            StaticDataLayer.execute_none(query)
+        if not table_is_non_temporary:
+            MetadataDataLayer.drop_temporary_table(self._table_name)
 
         if n1 != n2:
             raise Exception("Number of fields %d and number of columns %d don't match." % (n1, n2))
@@ -206,32 +196,13 @@ and   TABLE_NAME   = '%s'""" % self._table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_routine_parameters_info(self):
-        query = """
-select t2.parameter_name      parameter_name
-,      t2.data_type           parameter_type
-,      t2.udt_name            column_type
-from            information_schema.routines   t1
-left outer join information_schema.parameters t2  on  t2.specific_catalog = t1.specific_catalog and
-                                                      t2.specific_schema  = t1.specific_schema and
-                                                      t2.specific_name    = t1.specific_name and
-                                                      t2.parameter_name   is not null
-where t1.routine_catalog = current_database()
-and   t1.routine_schema  = current_schema()
-and   t1.routine_name    = '%s'
-order by t2.ordinal_position
-""" % self._routine_name
-
-        routine_parameters = StaticDataLayer.execute_rows(query)
-
+        """
+        Retrieves information about the stored routine parameters from the meta data of PostgreSQL.
+        """
+        routine_parameters = MetadataDataLayer.get_routine_parameters(self._routine_name)
         for routine_parameter in routine_parameters:
             if routine_parameter['parameter_name']:
                 value = routine_parameter['column_type']
-                if 'character_set_name' in routine_parameter:
-                    if routine_parameter['character_set_name']:
-                        value += ' character set %s' % routine_parameter['character_set_name']
-                if 'collation' in routine_parameter:
-                    if routine_parameter['character_set_name']:
-                        value += ' collation %s' % routine_parameter['collation']
 
                 self._parameters.append({'name': routine_parameter     ['parameter_name'],
                                          'data_type': routine_parameter['parameter_type'],
@@ -243,9 +214,8 @@ order by t2.ordinal_position
         Drops the stored routine if it exists.
         """
         if self._rdbms_old_metadata:
-            sql = "drop %s if exists %s(%s)" % (self._rdbms_old_metadata['routine_type'],
-                                                self._routine_name,
-                                                self._rdbms_old_metadata['routine_args'])
-            StaticDataLayer.execute_none(sql)
+            MetadataDataLayer.drop_stored_routine(self._rdbms_old_metadata['routine_type'],
+                                                  self._routine_name,
+                                                  self._rdbms_old_metadata['routine_args'])
 
 # ----------------------------------------------------------------------------------------------------------------------
