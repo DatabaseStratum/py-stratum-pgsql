@@ -18,12 +18,14 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, io):
         """
         Object constructor.
+
+        :param pystratum.style.PyStratumStyle.PyStratumStyle io: The output decorator.
         """
-        RoutineLoader.__init__(self)
-        PgSqlConnection.__init__(self)
+        RoutineLoader.__init__(self, io)
+        PgSqlConnection.__init__(self, io)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_column_type(self):
@@ -79,7 +81,8 @@ order by table_schema
                                         self._source_file_encoding,
                                         pystratum_old_metadata,
                                         self._replace_pairs,
-                                        rdbms_old_metadata)
+                                        rdbms_old_metadata,
+                                        self._io)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_old_stored_routine_info(self):

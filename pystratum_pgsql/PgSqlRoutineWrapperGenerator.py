@@ -17,12 +17,14 @@ class PgSqlRoutineWrapperGenerator(PgSqlConnection, RoutineWrapperGenerator):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, io):
         """
         Object constructor.
+
+        :param pystratum.style.PyStratumStyle.PyStratumStyle io: The output decorator.
         """
-        PgSqlConnection.__init__(self)
-        RoutineWrapperGenerator.__init__(self)
+        PgSqlConnection.__init__(self, io)
+        RoutineWrapperGenerator.__init__(self, io)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _read_configuration_file(self, config_filename):

@@ -21,12 +21,14 @@ class PgSqlConstants(PgSqlConnection, Constants):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, io):
         """
         Object constructor.
+
+        :param pystratum.style.PyStratumStyle.PyStratumStyle io: The output decorator.
         """
-        Constants.__init__(self)
-        PgSqlConnection.__init__(self)
+        Constants.__init__(self, io)
+        PgSqlConnection.__init__(self, io)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_old_columns(self):
@@ -198,7 +200,7 @@ union all
             content += "\n"
 
         # Save the columns, width and constants to the filesystem.
-        Util.write_two_phases(self._constants_filename, content)
+        Util.write_two_phases(self._constants_filename, content, self._io)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_labels(self, regex):

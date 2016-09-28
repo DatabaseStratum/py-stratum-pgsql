@@ -17,7 +17,12 @@ class PgSqlConnection(Connection.Connection):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, io):
+        """
+        Object constructor.
+
+        :param pystratum.style.PyStratumStyle.PyStratumStyle io: The output decorator.
+        """
         self._host = 'localhost'
         """
         The hostname of the PostgreSQL instance.
@@ -58,6 +63,13 @@ class PgSqlConnection(Connection.Connection):
         The schema name.
 
         :type: str
+        """
+
+        self.io = io
+        """
+        The output decorator.
+
+        :type: pystratum.style.PyStratumStyle.PyStratumStyle
         """
 
     # ------------------------------------------------------------------------------------------------------------------
