@@ -10,7 +10,6 @@ import re
 
 from pystratum.Constants import Constants
 from pystratum.Util import Util
-
 from pystratum_pgsql.PgSqlConnection import PgSqlConnection
 from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 
@@ -163,8 +162,8 @@ union all
                             self._columns[table_name][column_name]['constant_name'] = column['constant_name']
                         except KeyError:
                             # Either the column or table is not present anymore.
-                            print('Dropping constant {1} because column is not present anymore'.
-                                  format(column['constant_name']))
+                            self._io.warning('Dropping constant {0} because column is not present anymore'.
+                                             format(column['constant_name']))
 
     # ------------------------------------------------------------------------------------------------------------------
     def _write_columns(self):
@@ -265,14 +264,14 @@ where   nullif(\"{3!s}\",'') is not null""".format(table['id'],
         types_length = {'bigint':                      21,
                         'integer':                     11,
                         'smallint':                    6,
-                        'bit':                         column['character_maximum_length'],
+                        'bit': column                  ['character_maximum_length'],
                         'money':                       None,  # @todo max-length
                         'boolean':                     None,  # @todo max-length
-                        'double':                      column['numeric_precision'],
-                        'numeric':                     column['numeric_precision'],
+                        'double': column               ['numeric_precision'],
+                        'numeric': column              ['numeric_precision'],
                         'real':                        None,  # @todo max-length
-                        'character':                   column['character_maximum_length'],
-                        'character varying':           column['character_maximum_length'],
+                        'character': column            ['character_maximum_length'],
+                        'character varying': column    ['character_maximum_length'],
                         'point':                       None,  # @todo max-length
                         'polygon':                     None,  # @todo max-length
                         'text':                        None,  # @todo max-length

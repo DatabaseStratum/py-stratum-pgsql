@@ -122,7 +122,7 @@ order by routine_name
         """
         for routine_name, values in self._rdbms_old_metadata.items():
             if routine_name not in self._source_file_names:
-                print("Dropping {0!s} {1!s}".format(values['routine_type'], routine_name))
+                self._io.writeln("Dropping {0} <dbo>{1}</dbo>".format(values['routine_type'], routine_name))
                 sql = "drop {0!s} if exists {1!s}({2!s})".format(values['routine_type'],
                                                                  routine_name,
                                                                  values['routine_args'])

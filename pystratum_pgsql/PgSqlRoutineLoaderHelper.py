@@ -9,7 +9,6 @@ import re
 import sys
 
 from pystratum.RoutineLoaderHelper import RoutineLoaderHelper
-
 from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 from pystratum_pgsql.helper.PgSqlDataTypeHelper import PgSqlDataTypeHelper
 
@@ -51,21 +50,22 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         :rtype: bool
         """
         ret = True
-        p = re.compile("create\\s+(function)\\s+([a-zA-Z0-9_]+)")
-        matches = p.findall(self._routine_source_code)
+        prog = re.compile("create\\s+(function)\\s+([a-zA-Z0-9_]+)")
+        matches = prog.findall(self._routine_source_code)
 
         if matches:
             self._routine_type = matches[0][0].lower()
 
             if self._routine_name != matches[0][1]:
-                print("Error: Stored routine name '%s' does not match filename in file '%s'." % (
-                    matches[0][1], self._source_filename))
+                self._io.error('Stored routine name <dbo>{0}</dbo> does not match filename in file <fso>{1}</fso>'.
+                               format(matches[0][1], self._source_filename))
                 ret = False
         else:
             ret = False
 
         if not self._routine_type:
-            print("Error: Unable to find the stored routine name and type in file '%s'." % self._source_filename)
+            self._io.error('Unable to find the stored routine name and type in file <fso>{0}</fso>'.
+                           format(self._source_filename))
 
         return ret
 
@@ -94,7 +94,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         """
         Loads the stored routine into the MySQL instance.
         """
-        print("Loading %s %s" % (self._routine_type, self._routine_name))
+        self._io.writeln('Loading {0} <dbo>{1}</dbo>'.format(self._routine_type, self._routine_name))
 
         self._set_magic_constants()
 
@@ -185,8 +185,8 @@ and   TABLE_NAME   = '%s'""" % self._table_name
                     info = n.findall(tmp)
 
                     if not info:
-                        print("Error: Expected: -- type: bulk_insert <table_name> <columns> in file '%s'." %
-                              self._source_filename, file=sys.stderr)
+                        self._io.error('Expected: -- type: bulk_insert <table_name> <columns> in file <fso>{0}</fso>'.
+                                       format(self._source_filename))
                     self._table_name = info[0][0]
                     self._columns = str(info[0][1]).split(',')
 
@@ -199,8 +199,8 @@ and   TABLE_NAME   = '%s'""" % self._table_name
             ret = False
 
         if not ret:
-            print("Error: Unable to find the designation type of the stored routine in file '%s'." %
-                  self._source_filename, file=sys.stderr)
+            self._io.error("Unable to find the designation type of the stored routine in file <fso>{0}</fso>".
+                           format(self._source_filename))
 
         return ret
 
