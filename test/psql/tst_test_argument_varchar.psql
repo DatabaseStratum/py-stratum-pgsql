@@ -1,5 +1,7 @@
 /**
- * Test for argument type varchar
+ * Test for argument type varchar.
+ *
+ * @param p_varchar The test arguments.
  */
 create function tst_test_argument_varchar( p_varchar varchar )
 returns varchar

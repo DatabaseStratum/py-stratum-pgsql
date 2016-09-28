@@ -1,5 +1,7 @@
 /**
- * Test for argument type real
+ * Test for argument type real.
+ *
+ * @param p_real The test arguments.
  */
 create function tst_test_argument_real( p_real real )
 returns real

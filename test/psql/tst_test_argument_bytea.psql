@@ -1,5 +1,7 @@
 /**
- * Test for argument type bytea
+ * Test for argument type bytea.
+ *
+ * @param p_bytea The test arguments.
  */
 create function tst_test_argument_bytea( p_bytea bytea )
 returns bytea

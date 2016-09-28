@@ -1,5 +1,7 @@
 /**
- * Test for argument type text
+ * Test for argument type text.
+ *
+ * @param p_char The test arguments.
  */
 create function tst_test_argument_text( p_txt text )
 returns text

@@ -1,5 +1,7 @@
 /**
- * Test for argument type numeric
+ * Test for argument type numeric.
+ *
+ * @param p_num The test arguments.
  */
 create function tst_test_argument_numeric( p_num numeric )
 returns numeric

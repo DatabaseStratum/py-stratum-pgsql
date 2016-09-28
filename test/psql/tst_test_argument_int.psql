@@ -1,5 +1,7 @@
 /**
- * Test for argument type int
+ * Test for argument type int.
+ *
+ * @param p_int The test arguments.
  */
 create function tst_test_argument_int( p_int int )
 returns int

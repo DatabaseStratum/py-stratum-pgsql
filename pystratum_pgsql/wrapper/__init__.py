@@ -1,47 +1,54 @@
-from pystratum_pgsql.wrapper.FunctionsWrapper import FunctionsWrapper
-from pystratum_pgsql.wrapper.LogWrapper import LogWrapper
-from pystratum_pgsql.wrapper.NoneWrapper import NoneWrapper
-from pystratum_pgsql.wrapper.Row0Wrapper import Row0Wrapper
-from pystratum_pgsql.wrapper.Row1Wrapper import Row1Wrapper
-from pystratum_pgsql.wrapper.RowsWithIndexWrapper import RowsWithIndexWrapper
-from pystratum_pgsql.wrapper.RowsWithKeyWrapper import RowsWithKeyWrapper
-from pystratum_pgsql.wrapper.RowsWrapper import RowsWrapper
-from pystratum_pgsql.wrapper.Singleton0Wrapper import Singleton0Wrapper
-from pystratum_pgsql.wrapper.Singleton1Wrapper import Singleton1Wrapper
+"""
+PyStratum
+
+Copyright 2015-2016 Set Based IT Consultancy
+
+Licence MIT
+"""
+from pystratum_pgsql.wrapper.PgSqlFunctionsWrapper import PgSqlFunctionsWrapper
+from pystratum_pgsql.wrapper.PgSqlLogWrapper import PgSqlLogWrapper
+from pystratum_pgsql.wrapper.PgSqlNoneWrapper import PgSqlNoneWrapper
+from pystratum_pgsql.wrapper.PgSqlRow0Wrapper import PgSqlRow0Wrapper
+from pystratum_pgsql.wrapper.PgSqlRow1Wrapper import PgSqlRow1Wrapper
+from pystratum_pgsql.wrapper.PgSqlRowsWithIndexWrapper import PgSqlRowsWithIndexWrapper
+from pystratum_pgsql.wrapper.PgSqlRowsWithKeyWrapper import PgSqlRowsWithKeyWrapper
+from pystratum_pgsql.wrapper.PgSqlRowsWrapper import PgSqlRowsWrapper
+from pystratum_pgsql.wrapper.PgSqlSingleton0Wrapper import PgSqlSingleton0Wrapper
+from pystratum_pgsql.wrapper.PgSqlSingleton1Wrapper import PgSqlSingleton1Wrapper
+from pystratum_pgsql.wrapper.PgSqlTableWrapper import PgSqlTableWrapper
 
 
-# ----------------------------------------------------------------------------------------------------------------------
 def create_routine_wrapper(routine, lob_as_string_flag):
     """
     A factory for creating the appropriate object for generating a wrapper method for a stored routine.
 
     :param dict[str,str] routine: The metadata of the sored routine.
-    :param bool lob_as_string_flag: If True BLOBs and CLOBs must be treated as strings.
+    :param str lob_as_string_flag: If True BLOBs and CLOBs must be treated as strings.
 
     :rtype: pystratum_pgsql.wrapper.PgSqlWrapper.PgSqlWrapper
     """
     if routine['designation'] == 'none':
-        wrapper = NoneWrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlNoneWrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'row0':
-        wrapper = Row0Wrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlRow0Wrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'row1':
-        wrapper = Row1Wrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlRow1Wrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'rows':
-        wrapper = RowsWrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlRowsWrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'rows_with_index':
-        wrapper = RowsWithIndexWrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlRowsWithIndexWrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'rows_with_key':
-        wrapper = RowsWithKeyWrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlRowsWithKeyWrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'singleton0':
-        wrapper = Singleton0Wrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlSingleton0Wrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'singleton1':
-        wrapper = Singleton1Wrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlSingleton1Wrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'function':
-        wrapper = FunctionsWrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlFunctionsWrapper(routine, lob_as_string_flag)
     elif routine['designation'] == 'log':
-        wrapper = LogWrapper(routine, lob_as_string_flag)
-    # elif routine['designation'] == 'table':
-    #    wrapper = TableWrapper(routine, lob_as_string_flag)
+        wrapper = PgSqlLogWrapper(routine, lob_as_string_flag)
+    elif routine['designation'] == 'table':
+        wrapper = PgSqlTableWrapper(routine, lob_as_string_flag)
     # elif routine['designation'] == 'bulk':
     #    wrapper = BulkWrapper(routine, lob_as_string_flag)
     # elif routine['designation'] == 'bulk_insert':

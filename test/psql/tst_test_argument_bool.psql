@@ -1,5 +1,7 @@
 /**
- * Test for argument type boolean
+ * Test for argument type boolean.
+ *
+ * @param p_bool The test arguments.
  */
 create function tst_test_argument_bool( p_bool boolean )
 returns boolean

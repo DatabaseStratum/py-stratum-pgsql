@@ -11,6 +11,7 @@ import sys
 from pystratum.RoutineLoaderHelper import RoutineLoaderHelper
 
 from pystratum_pgsql.StaticDataLayer import StaticDataLayer
+from pystratum_pgsql.helper.PgSqlDataTypeHelper import PgSqlDataTypeHelper
 
 
 class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
@@ -67,6 +68,26 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
             print("Error: Unable to find the stored routine name and type in file '%s'." % self._source_filename)
 
         return ret
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _get_data_type_helper(self):
+        """
+        Returns a data type helper object or PostgreSQL.
+
+        :rtype: pystratum.helper.DataTypeHelper.DataTypeHelper
+        """
+        return PgSqlDataTypeHelper()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _is_start_or_store_routine(self, line):
+        """
+        Returns True if a line is the start of the code of the stored routine.
+
+        :param str line: The line with source code of the stored routine.
+
+        :rtype: bool
+        """
+        return re.match(r'^\s*create\s+(function)', line) is not None
 
     # ------------------------------------------------------------------------------------------------------------------
     def _load_routine_file(self):

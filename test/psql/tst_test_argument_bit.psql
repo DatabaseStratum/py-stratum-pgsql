@@ -1,5 +1,7 @@
 /**
- * Test for argument type bit
+ * Test for argument type bit.
+ *
+ * @param p_bit The test arguments.
  */
 create function tst_test_argument_bit( p_bit bit(4) )
 returns bit(4)

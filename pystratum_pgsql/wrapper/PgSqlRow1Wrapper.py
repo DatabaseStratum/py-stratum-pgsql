@@ -5,10 +5,11 @@ Copyright 2015-2016 Set Based IT Consultancy
 
 Licence MIT
 """
+from pystratum.wrapper.Row1Wrapper import Row1Wrapper
 from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
 
 
-class Row1Wrapper(PgSqlWrapper):
+class PgSqlRow1Wrapper(PgSqlWrapper, Row1Wrapper):
     """
     Wrapper method generator for stored procedures that are selecting 1 row.
     """

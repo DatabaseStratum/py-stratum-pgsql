@@ -1,5 +1,7 @@
 /**
- * Test for argument type small int
+ * Test for argument type small int.
+ *
+ * @param p_smallint The test arguments.
  */
 create function tst_test_argument_small_int( p_smallint smallint )
 returns smallint

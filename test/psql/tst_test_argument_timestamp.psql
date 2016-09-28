@@ -1,5 +1,7 @@
 /**
- * Test for argument type timestamp
+ * Test for argument type timestamp.
+ *
+ * @param p_ts The test arguments.
  */
 create function tst_test_argument_timestamp( p_ts timestamp )
 returns timestamp

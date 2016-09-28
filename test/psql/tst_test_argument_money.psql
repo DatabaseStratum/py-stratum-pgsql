@@ -1,5 +1,7 @@
 /**
- * Test for argument type money
+ * Test for argument type money.
+ *
+ * @param p_money The test arguments.
  */
 create function tst_test_argument_money( p_money money )
 returns money

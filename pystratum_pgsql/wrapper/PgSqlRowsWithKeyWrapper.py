@@ -5,12 +5,12 @@ Copyright 2015-2016 Set Based IT Consultancy
 
 Licence MIT
 """
-from pystratum.wrapper.RowsWithKeyWrapper import RowsWithKeyWrapper as BaseRowsWithKeyWrapper
+from pystratum.wrapper.RowsWithKeyWrapper import RowsWithKeyWrapper
 
 from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
 
 
-class RowsWithKeyWrapper(BaseRowsWithKeyWrapper, PgSqlWrapper):
+class PgSqlRowsWithKeyWrapper(RowsWithKeyWrapper, PgSqlWrapper):
     """
     Wrapper method generator for stored procedures whose result set must be returned using tree structure using a
     combination of unique columns.
