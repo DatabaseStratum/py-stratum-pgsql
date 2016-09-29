@@ -7,6 +7,8 @@ Licence MIT
 """
 import re
 
+from psycopg2._psycopg import ProgrammingError
+
 from pystratum.RoutineLoaderHelper import RoutineLoaderHelper
 from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
 from pystratum_pgsql.helper.PgSqlDataTypeHelper import PgSqlDataTypeHelper
@@ -93,7 +95,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         """
         Loads the stored routine into the MySQL instance.
         """
-        self._io.writeln('Loading {0} <dbo>{1}</dbo>'.format(self._routine_type, self._routine_name))
+        self._io.text('Loading {0} <dbo>{1}</dbo>'.format(self._routine_type, self._routine_name))
 
         self._set_magic_constants()
 
@@ -117,6 +119,29 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         PgSqlMetadataDataLayer.commit()
         PgSqlMetadataDataLayer.execute_none(routine_source)
         PgSqlMetadataDataLayer.commit()
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _log_exception(self, exception):
+        """
+        Logs an exception.
+
+        :param Exception exception: The exception.
+        """
+        RoutineLoaderHelper._log_exception(self, exception)
+
+        if isinstance(exception, ProgrammingError):
+            if 'syntax error at or near' in str(exception):
+                cursor = exception.cursor
+                if cursor:
+                    sql = str(cursor.query, 'utf-8').rstrip()
+
+                    parts = re.search(r'LINE (\d+):', str(exception))
+                    if parts:
+                        error_line = int(parts.group(1))
+                    else:
+                        error_line = 0
+
+                    self._print_sql_with_error(sql, error_line)
 
     # ------------------------------------------------------------------------------------------------------------------
     def get_bulk_insert_table_columns_info(self):

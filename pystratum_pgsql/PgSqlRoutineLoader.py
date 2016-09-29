@@ -40,7 +40,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
 
             self._replace_pairs[key] = value
 
-        self._io.writeln('Selected {0} column types for substitution'.format(len(rows)))
+        self._io.text('Selected {0} column types for substitution'.format(len(rows)))
 
     # ------------------------------------------------------------------------------------------------------------------
     def create_routine_loader_helper(self, routine_name, pystratum_old_metadata, rdbms_old_metadata):
@@ -78,7 +78,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         """
         for routine_name, values in self._rdbms_old_metadata.items():
             if routine_name not in self._source_file_names:
-                self._io.writeln("Dropping {0} <dbo>{1}</dbo>".format(values['routine_type'], routine_name))
+                self._io.text("Dropping {0} <dbo>{1}</dbo>".format(values['routine_type'], routine_name))
                 PgSqlMetadataDataLayer.drop_stored_routine(values['routine_type'], routine_name, values['routine_args'])
 
     # ------------------------------------------------------------------------------------------------------------------
