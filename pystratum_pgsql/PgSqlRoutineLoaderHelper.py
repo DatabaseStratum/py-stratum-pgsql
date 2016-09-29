@@ -7,7 +7,7 @@ Licence MIT
 """
 import re
 
-from psycopg2._psycopg import ProgrammingError
+from psycopg2 import ProgrammingError
 
 from pystratum.RoutineLoaderHelper import RoutineLoaderHelper
 from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
