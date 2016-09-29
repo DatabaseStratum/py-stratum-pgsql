@@ -6,9 +6,9 @@ returns void
 as $$
 -- type: log
 begin
- select 'Hello, world';
+  raise notice 'Hello, world';
 
- select 'Hello, world';
+  raise notice 'Hello, world';
 end;
 $$ language plpgsql;
 

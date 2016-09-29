@@ -317,4 +317,12 @@ order by routine_name
 
         return PgSqlMetadataDataLayer.execute_rows(sql)
 
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
+    def rollback():
+        """
+        Rollbacks the current transaction.
+        """
+        PgSqlMetadataDataLayer.__dl.rollback()
+
 # ----------------------------------------------------------------------------------------------------------------------

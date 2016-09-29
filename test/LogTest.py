@@ -13,7 +13,7 @@ from test.StratumTestCase import StratumTestCase
 
 class LogTest(StratumTestCase):
     # ------------------------------------------------------------------------------------------------------------------
-    def xtest1(self):
+    def test1(self):
         """
         Stored routine with designation type none must return the number of rows affected.
         """
@@ -22,6 +22,6 @@ class LogTest(StratumTestCase):
         self.assertEqual(2, n)
 
         self.assertRegex(sys.stdout.getvalue(),
-                         '^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\sHello, world\n){2}$')
+                         '^(Hello, world\n){2}$')
 
 # ----------------------------------------------------------------------------------------------------------------------

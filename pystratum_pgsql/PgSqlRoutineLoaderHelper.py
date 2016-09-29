@@ -127,6 +127,8 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
 
         :param Exception exception: The exception.
         """
+        PgSqlMetadataDataLayer.rollback()
+
         RoutineLoaderHelper._log_exception(self, exception)
 
         if isinstance(exception, ProgrammingError):

@@ -32,20 +32,6 @@ class StaticDataLayer:
     :type: bool
     """
 
-    sp_log_init = 'stratum_log_init'
-    """
-    The name of the stored routine that must be run before a store routine with designation type "log".
-
-    :type: str
-    """
-
-    sp_log_fetch = 'stratum_log_fetch'
-    """
-    The name of the stored routine that must be run after a store routine with designation type "log".
-
-    :type: str
-    """
-
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
     def _get_column_name(cursor):
@@ -375,27 +361,25 @@ class StaticDataLayer:
         """
         cursor = StaticDataLayer.connection.cursor()
 
-        # Create temporary table for logging.
-        cursor.callproc(StaticDataLayer.sp_log_init)
+        # Clear the list with notices.
+        del StaticDataLayer.connection.notices[:]
 
         # Execute the stored procedure.
         if params:
             cursor.execute(sql, params)
         else:
             cursor.execute(sql)
-
-        # Fetch the log messages.
-        cursor.callproc(StaticDataLayer.sp_log_fetch)
-        portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
-        messages = portal.fetchall()
-        portal.close()
         cursor.close()
 
-        # Log the log messages.
-        for message in messages:
-            print('{0!s} {1!s}'.format(*message), flush=StaticDataLayer.line_buffered)
+        count = 0
+        for notice in StaticDataLayer.connection.notices:
+            print(notice[9:].rstrip(), flush=StaticDataLayer.line_buffered)  # Remove leading 'NOTICE:  ' for message.
+            count += 1
 
-        return len(messages)
+        # Clear the list with notices.
+        del StaticDataLayer.connection.notices[:]
+
+        return count
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
