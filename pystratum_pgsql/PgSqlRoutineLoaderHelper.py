@@ -188,38 +188,52 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         """
         ret = True
 
-        key = self._routine_source_code_lines.index('begin')
+        positions = self._get_create_begin_block_positions()
+        if positions[0] != -1:
+            prog = re.compile(r'\s*--\s+type:\s*(\w+)\s*(.+)?\s*')
+            for x in range(positions[0], positions[1]):
+                matches = prog.findall(self._routine_source_code_lines[x])
+                if matches:
+                    self._designation_type = matches[0][0]
+                    tmp = str(matches[0][1])
+                    if self._designation_type == 'bulk_insert':
+                        n = re.compile(r'([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_,]+)')
+                        info = n.findall(tmp)
 
-        if key != -1:
-            p = re.compile(r'\s*--\s+type:\s*(\w+)\s*(.+)?\s*')
-            matches = p.findall(self._routine_source_code_lines[key - 1])
+                        if not info:
+                            self._io.error('Expected: -- type: bulk_insert <table_name> <columns> in file {0}'.
+                                           format(self._source_filename))
+                        self._table_name = info[0][0]
+                        self._columns = str(info[0][1]).split(',')
 
-            if matches:
-                self._designation_type = matches[0][0]
-                tmp = str(matches[0][1])
-                if self._designation_type == 'bulk_insert':
-                    n = re.compile(r'([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_,]+)')
-                    info = n.findall(tmp)
-
-                    if not info:
-                        self._io.error('Expected: -- type: bulk_insert <table_name> <columns> in file <fso>{0}</fso>'.
-                                       format(self._source_filename))
-                    self._table_name = info[0][0]
-                    self._columns = str(info[0][1]).split(',')
-
-                elif self._designation_type == 'rows_with_key' or self._designation_type == 'rows_with_index':
-                    self._columns = str(matches[0][1]).split(',')
-                else:
-                    if matches[0][1]:
-                        ret = False
+                    elif self._designation_type == 'rows_with_key' or self._designation_type == 'rows_with_index':
+                        self._columns = str(matches[0][1]).split(',')
+                    else:
+                        if matches[0][1]:
+                            ret = False
         else:
             ret = False
 
         if not ret:
-            self._io.error("Unable to find the designation type of the stored routine in file <fso>{0}</fso>".
+            self._io.error("Unable to find the designation type of the stored routine in file {0}".
                            format(self._source_filename))
 
         return ret
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _get_create_begin_block_positions(self):
+        """
+        Return start row based on 'create procedure' and end row based on 'begin'
+
+        :rtype: tuple
+        """
+        start = 0
+        end = self._routine_source_code_lines.index('begin')
+        for (i, item) in enumerate(self._routine_source_code_lines):
+            if 'create procedure' in item:
+                start = i + 1
+
+        return start, end
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_routine_parameters_info(self):
