@@ -126,13 +126,18 @@ class StaticDataLayer:
 
         :param string sql: The SQL statement.
         :param tuple params: The values for the statement.
+
+        :rtype: int
         """
         cursor = StaticDataLayer.connection.cursor()
         if params:
             cursor.execute(sql, params)
         else:
             cursor.execute(sql)
+        row_count = cursor.rowcount
         cursor.close()
+
+        return row_count
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -160,6 +165,9 @@ class StaticDataLayer:
     def execute_sp_none(sql, *params):
         """
         Executes a stored procedure that does not select any rows.
+
+        Unfortunately, it is not possible to retrieve the number of affected rows of the SQL statement in the stored
+        function as with execute_none (cursor.rowcount is always 1 using cursor.execute and cursor.callproc).
 
         :param str sql: The SQL statement.
         :param iterable params: The arguments for the statement.
