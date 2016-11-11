@@ -5,7 +5,7 @@ Copyright 2015-2016 Set Based IT Consultancy
 
 Licence MIT
 """
-from test.DataLayer import DataLayer
+from test.TestDataLayer import TestDataLayer
 from test.StratumTestCase import StratumTestCase
 
 
@@ -15,7 +15,7 @@ class Singleton0Test(StratumTestCase):
         """
         Stored routine with designation type singleton0 must return null.
         """
-        ret = DataLayer.tst_test_singleton0a(0)
+        ret = TestDataLayer.tst_test_singleton0a(0)
         self.assertIsNone(ret)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ class Singleton0Test(StratumTestCase):
         """
         Stored routine with designation type singleton0 must return 1 value.
         """
-        ret = DataLayer.tst_test_singleton0a(1)
+        ret = TestDataLayer.tst_test_singleton0a(1)
         self.assertIsInstance(ret, (str, int, float))
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -32,6 +32,6 @@ class Singleton0Test(StratumTestCase):
         An exception must be thrown when a stored routine with designation type singleton0 returns more than 1 values.
         """
         with self.assertRaises(Exception):
-            DataLayer.tst_test_singleton0a(2)
+            TestDataLayer.tst_test_singleton0a(2)
 
 # ----------------------------------------------------------------------------------------------------------------------

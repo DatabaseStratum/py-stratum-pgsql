@@ -9,19 +9,19 @@ import sys
 import unittest
 from io import StringIO
 
-from test.DataLayer import DataLayer
+from test.TestDataLayer import TestDataLayer
 
 
 class StratumTestCase(unittest.TestCase):
     # ------------------------------------------------------------------------------------------------------------------
     def setUp(self):
-        DataLayer.connect('localhost', 'test', 'test', 'test', 'test')
+        TestDataLayer.connect('localhost', 'test', 'test', 'test', 'test')
 
         self.held, sys.stdout = sys.stdout, StringIO()
 
     # ------------------------------------------------------------------------------------------------------------------
     def tearDown(self):
         sys.stdout = self.held
-        DataLayer.disconnect()
+        TestDataLayer.disconnect()
 
 # ----------------------------------------------------------------------------------------------------------------------

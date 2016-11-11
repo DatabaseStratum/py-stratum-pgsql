@@ -5,7 +5,7 @@ Copyright 2015-2016 Set Based IT Consultancy
 
 Licence MIT
 """
-from test.DataLayer import DataLayer
+from test.TestDataLayer import TestDataLayer
 from test.StratumTestCase import StratumTestCase
 
 
@@ -15,7 +15,7 @@ class RowsWithKeyTest(StratumTestCase):
         """
         Stored routine with designation type rows_with_key must return multi dimensional array.
         """
-        rows = DataLayer.tst_test_rows_with_key1(100)
+        rows = TestDataLayer.tst_test_rows_with_key1(100)
         self.assertIsInstance(rows, dict)
         self.assertEqual(1, len(rows))
         self.assertTrue('a' in rows)
@@ -29,7 +29,7 @@ class RowsWithKeyTest(StratumTestCase):
         """
         Stored routine with designation type rows_with_key must return empty array when no rows are selected.
         """
-        rows = DataLayer.tst_test_rows_with_key1(0)
+        rows = TestDataLayer.tst_test_rows_with_key1(0)
         self.assertIsInstance(rows, dict)
         self.assertEqual(0, len(rows))
 

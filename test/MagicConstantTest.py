@@ -7,7 +7,7 @@ Licence MIT
 """
 import os
 
-from test.DataLayer import DataLayer
+from test.TestDataLayer import TestDataLayer
 from test.StratumTestCase import StratumTestCase
 
 
@@ -17,7 +17,7 @@ class MagicConstantTest(StratumTestCase):
         """
         Test constant __ROUTINE__. Must return name of routine.
         """
-        ret = DataLayer.tst_magic_constant01()
+        ret = TestDataLayer.tst_magic_constant01()
         self.assertEqual('tst_magic_constant01', ret)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ class MagicConstantTest(StratumTestCase):
         """
         Test constant __LINE__. Must return line number in the source code.
         """
-        ret = DataLayer.tst_magic_constant02()
+        ret = TestDataLayer.tst_magic_constant02()
         self.assertEqual(13, int(ret))
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ class MagicConstantTest(StratumTestCase):
         dir_cur_file = os.path.dirname(os.path.abspath(__file__))
         path = os.path.realpath(dir_cur_file + "/psql/tst_magic_constant03.psql")
         filename = os.path.realpath(path)
-        ret = DataLayer.tst_magic_constant03()
+        ret = TestDataLayer.tst_magic_constant03()
         self.assertEqual(filename, ret)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ class MagicConstantTest(StratumTestCase):
         """
         dir_cur_file = os.path.dirname(os.path.abspath(__file__))
         dir_name = os.path.realpath(dir_cur_file + '/psql/')
-        ret = DataLayer.tst_magic_constant04()
+        ret = TestDataLayer.tst_magic_constant04()
         self.assertEqual(dir_name, ret)
 
 # ----------------------------------------------------------------------------------------------------------------------
