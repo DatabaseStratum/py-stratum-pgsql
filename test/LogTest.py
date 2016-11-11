@@ -22,6 +22,6 @@ class LogTest(StratumTestCase):
         self.assertEqual(2, n)
 
         self.assertRegex(sys.stdout.getvalue(),
-                         '^(Hello, world\n){2}$')
+                         '^(\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}\sHello, world\n){2}$')
 
 # ----------------------------------------------------------------------------------------------------------------------

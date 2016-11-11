@@ -6,9 +6,9 @@ returns void
 as $$
 -- type: log
 begin
-  raise notice 'Hello, world';
+  perform stratum_log_line('Hello, world');
 
-  raise notice 'Hello, world';
+  perform stratum_log_line('Hello, world');
 end;
 $$ language plpgsql;
 
