@@ -5,8 +5,6 @@ Copyright 2015-2016 Set Based IT Consultancy
 
 Licence MIT
 """
-import os
-
 from pystratum.MetadataDataLayer import MetadataDataLayer
 from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 

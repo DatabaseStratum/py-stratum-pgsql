@@ -74,7 +74,6 @@ class PgSqlWrapper(Wrapper):
 
         execute = 'select'
 
-        i = 0
         l = 0
         for parameter in routine['parameters']:
             re_type = self._get_parameter_format_specifier(parameter)
@@ -83,7 +82,6 @@ class PgSqlWrapper(Wrapper):
                 placeholders += ', '
             parameters += parameter['name']
             placeholders += re_type
-            i += 1
             if not re_type == '?':
                 l += 1
 

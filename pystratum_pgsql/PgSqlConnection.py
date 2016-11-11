@@ -13,7 +13,7 @@ from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
 
 class PgSqlConnection(Connection):
     """
-    Class for connecting to PostgreSQL instances and reading PostgreSQL specific connection parameters from 
+    Class for connecting to PostgreSQL instances and reading PostgreSQL specific connection parameters from
     configuration files.
     """
 

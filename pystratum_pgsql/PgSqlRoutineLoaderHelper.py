@@ -162,8 +162,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
 
         n1 = 0
         for column in columns:
-            p = re.compile('(\\w+)')
-            c_type = p.findall(column['Type'])
+            c_type = re.findall(r'(\\w+)', column['Type'])
             tmp_column_types.append(c_type[0])
             tmp_fields.append(column['Field'])
             n1 += 1
@@ -191,15 +190,13 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         key = self._routine_source_code_lines.index('begin')
 
         if key != -1:
-            p = re.compile(r'\s*--\s+type:\s*(\w+)\s*(.+)?\s*')
-            matches = p.findall(self._routine_source_code_lines[key - 1])
+            matches = re.findall(r'\s*--\s+type:\s*(\w+)\s*(.+)?\s*', self._routine_source_code_lines[key - 1])
 
             if matches:
                 self._designation_type = matches[0][0]
                 tmp = str(matches[0][1])
                 if self._designation_type == 'bulk_insert':
-                    n = re.compile(r'([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_,]+)')
-                    info = n.findall(tmp)
+                    info = re.findall(r'([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_,]+)', tmp)
 
                     if not info:
                         self._io.error('Expected: -- type: bulk_insert <table_name> <columns> in file <fso>{0}</fso>'.

@@ -36,10 +36,8 @@ class PgSqlConstants(PgSqlConnection, Constants):
         and the constant name (if assigned) and stores this data in old_columns.
         """
         if os.path.exists(self._constants_filename):
-            with open(self._constants_filename, 'r') as f:
-                line_number = 0
-                for line in f:
-                    line_number += 1
+            with open(self._constants_filename, 'r') as stream:
+                for line in stream:
                     if line != "\n":
                         prog = re.compile(r'\s*(?:([a-zA-Z0-9_]+)\.)?([a-zA-Z0-9_]+)\.'
                                           r'([a-zA-Z0-9_]+)\s+(\d+)\s*(\*|[a-zA-Z0-9_]+)?\s*')
@@ -136,7 +134,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
         constants_filename.
         """
         content = ''
-        for table_name, table in sorted(self._columns.items()):
+        for _, table in sorted(self._columns.items()):
             width1 = 0
             width2 = 0
 
@@ -146,7 +144,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
                 width1 = max(len(str(column['column_name'])), width1)
                 width2 = max(len(str(column['length'])), width2)
 
-            for ord_position, column_name in sorted(key_map.items()):
+            for _, column_name in sorted(key_map.items()):
                 if table[column_name]['length'] is not None:
                     if 'constant_name' in table[column_name]:
                         line_format = "%s.%-{0:d}s %{1:d}d %s\n".format(int(width1), int(width2))
@@ -183,8 +181,8 @@ class PgSqlConstants(PgSqlConnection, Constants):
         """
         Merges columns and labels (i.e. all known constants) into constants.
         """
-        for table_name, table in sorted(self._columns.items()):
-            for column_name, column in sorted(table.items()):
+        for _, table in sorted(self._columns.items()):
+            for _, column in sorted(table.items()):
                 if 'constant_name' in column:
                     self._constants[column['constant_name']] = column['length']
 
