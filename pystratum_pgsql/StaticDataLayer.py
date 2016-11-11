@@ -198,8 +198,8 @@ class StaticDataLayer:
             cursor.execute(sql)
         portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
         rows = portal.fetchall()
-        n = len(rows)
-        if n == 1:
+        row_count = len(rows)
+        if row_count == 1:
             column_names = StaticDataLayer._get_column_name(portal)
             ret = dict(zip(column_names, rows[0]))
         else:
@@ -207,8 +207,8 @@ class StaticDataLayer:
         portal.close()
         cursor.close()
 
-        if not (n == 0 or n == 1):
-            raise ResultException('0 or 1', n, sql)
+        if not (row_count == 0 or row_count == 1):
+            raise ResultException('0 or 1', row_count, sql)
 
         return ret
 
@@ -231,8 +231,8 @@ class StaticDataLayer:
         portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
         rows = portal.fetchall()
         StaticDataLayer._get_column_name(portal)
-        n = len(rows)
-        if n == 1:
+        row_count = len(rows)
+        if row_count == 1:
             column_names = StaticDataLayer._get_column_name(portal)
             ret = dict(zip(column_names, rows[0]))
         else:
@@ -240,8 +240,8 @@ class StaticDataLayer:
         portal.close()
         cursor.close()
 
-        if n != 1:
-            raise ResultException('1', n, sql)
+        if row_count != 1:
+            raise ResultException('1', row_count, sql)
 
         return ret
 
@@ -292,16 +292,16 @@ class StaticDataLayer:
             cursor.execute(sql)
         portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
         rows = portal.fetchall()
-        n = len(rows)
-        if n == 1:
+        row_count = len(rows)
+        if row_count == 1:
             ret = rows[0][0]
         else:
             ret = None  # Keep our IDE happy.
         portal.close()
         cursor.close()
 
-        if not (n == 0 or n == 1):
-            raise ResultException('0 or 1', n, sql)
+        if not (row_count == 0 or row_count == 1):
+            raise ResultException('0 or 1', row_count, sql)
 
         return ret
 
@@ -321,15 +321,15 @@ class StaticDataLayer:
             cursor.execute(sql, params)
         else:
             cursor.execute(sql)
-        n = cursor.rowcount
-        if n == 1:
+        row_count = cursor.rowcount
+        if row_count == 1:
             ret = cursor.fetchone()[0]
         else:
             ret = None  # Keep our IDE happy.
         cursor.close()
 
-        if n != 1:
-            raise ResultException('1', n, sql)
+        if row_count != 1:
+            raise ResultException('1', row_count, sql)
 
         return ret
 
@@ -351,8 +351,8 @@ class StaticDataLayer:
             cursor.execute(sql)
         portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
         rows = portal.fetchall()
-        n = len(rows)
-        if n == 1:
+        row_count = len(rows)
+        if row_count == 1:
             ret = rows[0][0]
         else:
             ret = None  # Keep our IDE happy.
@@ -360,13 +360,21 @@ class StaticDataLayer:
         cursor.close()
 
         if len(rows) != 1:
-            raise ResultException('1', n, sql)
+            raise ResultException('1', row_count, sql)
 
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
     def execute_sp_table(sql, *params):
+        """
+        Executes a stored routine with designation type "table". Returns the number of rows.
+
+        :param str sql: The SQL calling the the stored procedure.
+        :param iterable params: The arguments for calling the stored routine.
+
+        :rtype: int
+        """
         # todo methods for showing table
         raise NotImplementedError()
 
@@ -425,10 +433,10 @@ class StaticDataLayer:
         """
         cursor = StaticDataLayer.connection.cursor()
         cursor.copy_from(file, table, sep, null, size, columns)
-        n = cursor.rowcount
+        row_count = cursor.rowcount
         cursor.close()
 
-        return n
+        return row_count
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -446,10 +454,10 @@ class StaticDataLayer:
         """
         cursor = StaticDataLayer.connection.cursor()
         cursor.copy_to(file, table, sep, null, columns)
-        n = cursor.rowcount
+        row_count = cursor.rowcount
         cursor.close()
 
-        return n
+        return row_count
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
@@ -465,9 +473,9 @@ class StaticDataLayer:
         """
         cursor = StaticDataLayer.connection.cursor()
         cursor.copy_expert(sql, file, size)
-        n = cursor.rowcount
+        row_count = cursor.rowcount
         cursor.close()
 
-        return n
+        return row_count
 
 # ----------------------------------------------------------------------------------------------------------------------
