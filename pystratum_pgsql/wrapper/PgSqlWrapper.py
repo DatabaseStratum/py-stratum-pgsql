@@ -74,7 +74,7 @@ class PgSqlWrapper(Wrapper):
 
         execute = 'select'
 
-        l = 0
+        parameter_count = 0
         for parameter in routine['parameters']:
             re_type = self._get_parameter_format_specifier(parameter)
             if parameters:
@@ -83,11 +83,11 @@ class PgSqlWrapper(Wrapper):
             parameters += parameter['name']
             placeholders += re_type
             if not re_type == '?':
-                l += 1
+                parameter_count += 1
 
-        if l == 0:
+        if parameter_count == 0:
             line = '"{0!s} {1!s}()"'.format(execute, routine['routine_name'])
-        elif l >= 1:
+        elif parameter_count >= 1:
             line = '"{0!s} {1!s}({2!s})", {3!s}'.format(execute, routine['routine_name'], placeholders, parameters)
         else:
             raise Exception('Internal error.')
