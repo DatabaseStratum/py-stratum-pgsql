@@ -5,10 +5,8 @@ Copyright 2015-2016 Set Based IT Consultancy
 
 Licence MIT
 """
-import os
-
-from pystratum_test.TestDataLayer import TestDataLayer
 from pystratum_test.StratumTestCase import StratumTestCase
+from pystratum_test.TestDataLayer import TestDataLayer
 
 
 class ConstantTest(StratumTestCase):
