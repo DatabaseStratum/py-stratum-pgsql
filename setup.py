@@ -43,5 +43,5 @@ setup(
 
     packages=find_packages(exclude=['build', 'pystratum_test']),
 
-    install_requires=['pystratum>0.10.11', 'psycopg2'],
+    install_requires=['pystratum>=0.10.11', 'psycopg2'],
 )
