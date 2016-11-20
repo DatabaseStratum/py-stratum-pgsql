@@ -1,0 +1,21 @@
+/**
+ * Test for constant.
+ */
+create function tst_constant01()
+returns refcursor
+as $$
+declare
+  cur refcursor;
+  -- type: row1
+begin
+  open cur
+  for
+  select @TEST_INT@    as "int"
+  ,      @TEST_FLOAT@  as "float"
+  ,      @TEST_FALSE@  as "false"
+  ,      @TEST_TRUE@   as "true"
+  ,      @TEST_STR@    as "str";
+
+  return cur;
+end;
+$$ language plpgsql;

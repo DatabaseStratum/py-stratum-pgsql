@@ -34,14 +34,14 @@ setup(
         'License :: OSI Approved :: MIT License',
 
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
 
     keywords='stored procedures, loader, wrapper, PL/pgSQL, PostgresSQL',
 
-    packages=find_packages(exclude=['build', 'test']),
+    packages=find_packages(exclude=['build', 'pystratum_test']),
 
-    install_requires=['pystratum', 'psycopg2'],
+    install_requires=['pystratum>0.10.11', 'psycopg2'],
 )

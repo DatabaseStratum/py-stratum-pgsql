@@ -9,6 +9,16 @@ class TestDataLayer(StaticDataLayer):
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
+    def tst_constant01():
+        """
+        Test for constant.
+
+        :rtype: dict[str,*]
+        """
+        return StaticDataLayer.execute_sp_row1("select tst_constant01()")
+
+    # ------------------------------------------------------------------------------------------------------------------
+    @staticmethod
     def tst_magic_constant01():
         """
         Test for magic constant.

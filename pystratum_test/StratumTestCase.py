@@ -9,7 +9,7 @@ import sys
 import unittest
 from io import StringIO
 
-from test.TestDataLayer import TestDataLayer
+from pystratum_test.TestDataLayer import TestDataLayer
 
 
 class StratumTestCase(unittest.TestCase):

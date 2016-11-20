@@ -52,10 +52,10 @@
 
     <!-- Runs all unit tests for PostgreSQL-->
     <target name="unit">
-        <delete file="test/etc/routines.json" quiet="true"/>
-        <exec command="cat test/ddl/create_tables.sql | psql -Utest test" passthru="true" checkreturn="true"/>
-        <exec command="pystratum stratum test/etc/stratum.cfg" passthru="true" checkreturn="true"/>
-        <exec command="coverage3 run -m unittest discover -s test -p \*Test.py" passthru="true" checkreturn="true"/>
+        <delete file="pystratum_test/etc/routines.json" quiet="true"/>
+        <exec command="cat pystratum_test/ddl/create_tables.sql | psql -Utest test" passthru="true" checkreturn="true"/>
+        <exec command="pystratum stratum pystratum_test/etc/stratum.cfg" passthru="true" checkreturn="true"/>
+        <exec command="coverage3 run -m unittest discover -s pystratum_test -p \*Test.py" passthru="true" checkreturn="true"/>
         <exec command="coverage3 html" passthru="true" checkreturn="true"/>
     </target>
 

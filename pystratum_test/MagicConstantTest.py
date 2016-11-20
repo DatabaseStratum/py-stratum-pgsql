@@ -7,8 +7,8 @@ Licence MIT
 """
 import os
 
-from test.TestDataLayer import TestDataLayer
-from test.StratumTestCase import StratumTestCase
+from pystratum_test.TestDataLayer import TestDataLayer
+from pystratum_test.StratumTestCase import StratumTestCase
 
 
 class MagicConstantTest(StratumTestCase):
