@@ -1,3 +1,7 @@
+filter:
+    excluded_paths:
+        - pystratum_test/*
+
 before_commands:
     - sudo pip3 install cleo
     - sudo pip3 install coverage
