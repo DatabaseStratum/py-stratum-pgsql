@@ -146,6 +146,13 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
                     self._print_sql_with_error(sql, error_line)
 
     # ------------------------------------------------------------------------------------------------------------------
+    def _get_bulk_insert_table_columns_info(self):
+        """
+        Gets the column names and column types of the current table for bulk insert.
+        """
+        raise NotImplementedError()
+
+    # ------------------------------------------------------------------------------------------------------------------
     def get_bulk_insert_table_columns_info(self):
         """
         Gets the column names and column types of the current table for bulk insert.
