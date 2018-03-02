@@ -1,3 +1,7 @@
+foo.col1 11
+foo.col2 11
+foo.col3 12
+
 tst_foo1.tst_bigint      21
 tst_foo1.tst_int         11
 tst_foo1.tst_smallint     6
