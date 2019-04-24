@@ -51,8 +51,8 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         :rtype: bool
         """
         ret = True
-        prog = re.compile("create\\s+(function)\\s+([a-zA-Z0-9_]+)")
-        matches = prog.findall(self._routine_source_code)
+        pattern = re.compile(r'create\s+(function)\s+([a-zA-Z0-9_]+)')
+        matches = pattern.findall(self._routine_source_code)
 
         if matches:
             self._routine_type = matches[0][0].lower()
@@ -80,7 +80,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         return PgSqlDataTypeHelper()
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _is_start_or_store_routine(self, line):
+    def _is_start_of_stored_routine(self, line):
         """
         Returns True if a line is the start of the code of the stored routine.
 
@@ -88,7 +88,18 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
 
         :rtype: bool
         """
-        return re.match(r'^\s*create\s+(function)', line) is not None
+        return re.match(r'^\s*create\s+(function)', line, re.IGNORECASE) is not None
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _is_start_of_stored_routine_body(self, line):
+        """
+        Returns True if a line is the start of the body of the stored routine.
+
+        :param str line: The line with source code of the stored routine.
+
+        :rtype: bool
+        """
+        return re.match(r'^\s*begin', line, re.IGNORECASE) is not None
 
     # ------------------------------------------------------------------------------------------------------------------
     def _load_routine_file(self):
@@ -184,62 +195,6 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
 
         self._columns_types = tmp_column_types
         self._fields = tmp_fields
-
-    # ------------------------------------------------------------------------------------------------------------------
-    def _get_designation_type(self):
-        """
-        Extracts the designation type of the stored routine. Returns True on success. Otherwise returns False.
-
-        :rtype: bool
-        """
-        ret = True
-
-        positions = self._get_create_begin_block_positions()
-        if positions[0] != -1:
-            prog = re.compile(r'\s*--\s+type:\s*(\w+)\s*(.+)?\s*')
-            for x in range(positions[0], positions[1]):
-                matches = prog.findall(self._routine_source_code_lines[x])
-                if matches:
-                    self._designation_type = matches[0][0]
-                    tmp = str(matches[0][1])
-                    if self._designation_type == 'bulk_insert':
-                        n = re.compile(r'([a-zA-Z0-9_]+)\s+([a-zA-Z0-9_,]+)')
-                        info = n.findall(tmp)
-
-                        if not info:
-                            self._io.error('Expected: -- type: bulk_insert <table_name> <columns> in file {0}'.
-                                           format(self._source_filename))
-                        self._table_name = info[0][0]
-                        self._columns = str(info[0][1]).split(',')
-
-                    elif self._designation_type == 'rows_with_key' or self._designation_type == 'rows_with_index':
-                        self._columns = str(matches[0][1]).split(',')
-                    else:
-                        if matches[0][1]:
-                            ret = False
-        else:
-            ret = False
-
-        if not ret:
-            self._io.error("Unable to find the designation type of the stored routine in file {0}".
-                           format(self._source_filename))
-
-        return ret
-
-    # ------------------------------------------------------------------------------------------------------------------
-    def _get_create_begin_block_positions(self):
-        """
-        Return start row based on 'create procedure' and end row based on 'begin'
-
-        :rtype: tuple
-        """
-        start = 0
-        end = self._routine_source_code_lines.index('begin')
-        for (i, item) in enumerate(self._routine_source_code_lines):
-            if 'create function' in item:
-                start = i + 1
-
-        return start, end
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_routine_parameters_info(self):

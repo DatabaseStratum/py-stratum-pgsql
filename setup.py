@@ -37,11 +37,12 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
 
     keywords='stored procedures, loader, wrapper, PL/pgSQL, PostgresSQL',
 
     packages=find_packages(exclude=['build', 'pystratum_test']),
 
-    install_requires=['pystratum>=0.10.11', 'psycopg2'],
+    install_requires=['pystratum>=0.10.20', 'psycopg2'],
 )
