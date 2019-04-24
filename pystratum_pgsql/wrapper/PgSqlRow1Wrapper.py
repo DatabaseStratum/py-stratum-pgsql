@@ -1,9 +1,5 @@
 """
 PyStratum
-
-Copyright 2015-2016 Set Based IT Consultancy
-
-Licence MIT
 """
 from pystratum.wrapper.Row1Wrapper import Row1Wrapper
 from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
