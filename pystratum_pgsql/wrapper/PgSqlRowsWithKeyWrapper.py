@@ -1,6 +1,8 @@
 """
 PyStratum
 """
+from typing import Dict, Any
+
 from pystratum.wrapper.RowsWithKeyWrapper import RowsWithKeyWrapper
 
 from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
@@ -13,7 +15,7 @@ class PgSqlRowsWithKeyWrapper(RowsWithKeyWrapper, PgSqlWrapper):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _write_execute_rows(self, routine):
+    def _write_execute_rows(self, routine: Dict[str, Any]):
         self._write_line('rows = StaticDataLayer.execute_sp_rows({0!s})'.format(self._generate_command(routine)))
 
 # ----------------------------------------------------------------------------------------------------------------------

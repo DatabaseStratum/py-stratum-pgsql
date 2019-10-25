@@ -1,6 +1,10 @@
 """
 PyStratum
 """
+from typing import Dict
+
+from pystratum.style.PyStratumStyle import PyStratumStyle
+
 from pystratum.RoutineLoader import RoutineLoader
 
 from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
@@ -14,17 +18,17 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self, io):
+    def __init__(self, io: PyStratumStyle):
         """
         Object constructor.
 
-        :param pystratum.style.PyStratumStyle.PyStratumStyle io: The output decorator.
+        :param PyStratumStyle io: The output decorator.
         """
         RoutineLoader.__init__(self, io)
         PgSqlConnection.__init__(self, io)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_column_type(self):
+    def _get_column_type(self) -> None:
         """
         Selects schema, table, column names and the column type from MySQL and saves them as replace pairs.
         """
@@ -39,7 +43,10 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         self._io.text('Selected {0} column types for substitution'.format(len(rows)))
 
     # ------------------------------------------------------------------------------------------------------------------
-    def create_routine_loader_helper(self, routine_name, pystratum_old_metadata, rdbms_old_metadata):
+    def create_routine_loader_helper(self,
+                                     routine_name: Dict,
+                                     pystratum_old_metadata: Dict,
+                                     rdbms_old_metadata: Dict) -> PgSqlRoutineLoaderHelper:
         """
         Creates a Routine Loader Helper object.
 
@@ -47,7 +54,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         :param dict pystratum_old_metadata: The old metadata of the stored routine from PyStratum.
         :param dict rdbms_old_metadata:  The old metadata of the stored routine from PostgreSQL.
 
-        :rtype: pystratum_pgsql.PgSqlRoutineLoaderHelper.PgSqlRoutineLoaderHelper
+        :rtype: PgSqlRoutineLoaderHelper
         """
         return PgSqlRoutineLoaderHelper(self._source_file_names[routine_name],
                                         self._source_file_encoding,
@@ -57,7 +64,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
                                         self._io)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_old_stored_routine_info(self):
+    def _get_old_stored_routine_info(self) -> None:
         """
         Retrieves information about all stored routines in the current schema.
         """
@@ -67,7 +74,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
             self._rdbms_old_metadata[row['routine_name']] = row
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _drop_obsolete_routines(self):
+    def _drop_obsolete_routines(self) -> None:
         """
         Drops obsolete stored routines (i.e. stored routines that exists in the current schema but for
         which we don't have a source file).
@@ -78,7 +85,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
                 PgSqlMetadataDataLayer.drop_stored_routine(values['routine_type'], routine_name, values['routine_args'])
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _read_configuration_file(self, config_filename):
+    def _read_configuration_file(self, config_filename: str) -> None:
         """
         Reads parameters from the configuration file.
 

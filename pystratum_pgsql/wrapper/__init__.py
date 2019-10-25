@@ -1,6 +1,10 @@
 """
 PyStratum
 """
+from typing import Dict
+
+from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
+
 from pystratum_pgsql.wrapper.PgSqlFunctionsWrapper import PgSqlFunctionsWrapper
 from pystratum_pgsql.wrapper.PgSqlLogWrapper import PgSqlLogWrapper
 from pystratum_pgsql.wrapper.PgSqlNoneWrapper import PgSqlNoneWrapper
@@ -14,14 +18,14 @@ from pystratum_pgsql.wrapper.PgSqlSingleton1Wrapper import PgSqlSingleton1Wrappe
 from pystratum_pgsql.wrapper.PgSqlTableWrapper import PgSqlTableWrapper
 
 
-def create_routine_wrapper(routine, lob_as_string_flag):
+def create_routine_wrapper(routine: Dict, lob_as_string_flag: bool) -> PgSqlWrapper:
     """
     A factory for creating the appropriate object for generating a wrapper method for a stored routine.
 
     :param dict[str,str] routine: The metadata of the sored routine.
-    :param str lob_as_string_flag: If True BLOBs and CLOBs must be treated as strings.
+    :param bool lob_as_string_flag: If True BLOBs and CLOBs must be treated as strings.
 
-    :rtype: pystratum_pgsql.wrapper.PgSqlWrapper.PgSqlWrapper
+    :rtype: PgSqlWrapper
     """
     if routine['designation'] == 'none':
         wrapper = PgSqlNoneWrapper(routine, lob_as_string_flag)

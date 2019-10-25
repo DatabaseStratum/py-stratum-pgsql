@@ -2,6 +2,7 @@
 PyStratum
 """
 import abc
+from typing import Dict, Any
 
 from pystratum.wrapper.Wrapper import Wrapper
 
@@ -50,9 +51,11 @@ class PgSqlWrapper(Wrapper):
 
     # ------------------------------------------------------------------------------------------------------------------
     @abc.abstractmethod
-    def _write_result_handler(self, routine):
+    def _write_result_handler(self, routine: Dict[str, Any]) -> None:
         """
-        Generates code for calling the stored routine in the wrapper method.
+        Generates code of the return statement of the wrapper method for invoking a stored routine.
+
+        :param dict routine: Metadata of the stored routine.
         """
         raise NotImplementedError()
 

@@ -1,6 +1,10 @@
 """
 PyStratum
 """
+from typing import Dict
+
+from pystratum.style.PyStratumStyle import PyStratumStyle
+
 from pystratum.RoutineWrapperGenerator import RoutineWrapperGenerator
 
 from pystratum_pgsql.PgSqlConnection import PgSqlConnection
@@ -13,17 +17,17 @@ class PgSqlRoutineWrapperGenerator(PgSqlConnection, RoutineWrapperGenerator):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self, io):
+    def __init__(self, io: PyStratumStyle):
         """
         Object constructor.
 
-        :param pystratum.style.PyStratumStyle.PyStratumStyle io: The output decorator.
+        :param PyStratumStyle io: The output decorator.
         """
         PgSqlConnection.__init__(self, io)
         RoutineWrapperGenerator.__init__(self, io)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _read_configuration_file(self, config_filename):
+    def _read_configuration_file(self, config_filename: str) -> None:
         """
         Reads parameters from the configuration file.
 
@@ -33,7 +37,7 @@ class PgSqlRoutineWrapperGenerator(PgSqlConnection, RoutineWrapperGenerator):
         RoutineWrapperGenerator._read_configuration_file(self, config_filename)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _write_routine_function(self, routine):
+    def _write_routine_function(self, routine: Dict) -> None:
         """
         Generates a complete wrapper method for a stored routine.
 

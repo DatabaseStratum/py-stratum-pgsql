@@ -6,6 +6,7 @@ import re
 from psycopg2 import ProgrammingError
 
 from pystratum.RoutineLoaderHelper import RoutineLoaderHelper
+from pystratum.helper.DataTypeHelper import DataTypeHelper
 from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
 from pystratum_pgsql.helper.PgSqlDataTypeHelper import PgSqlDataTypeHelper
 
@@ -39,7 +40,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         return False
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_name(self):
+    def _get_name(self) -> bool:
         """
         Extracts the name of the stored routine and the stored routine type (i.e. procedure or function) source.
         Returns True on success, False otherwise.
@@ -67,16 +68,16 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_data_type_helper(self):
+    def _get_data_type_helper(self) -> DataTypeHelper:
         """
         Returns a data type helper object or PostgreSQL.
 
-        :rtype: pystratum.helper.DataTypeHelper.DataTypeHelper
+        :rtype: DataTypeHelper
         """
         return PgSqlDataTypeHelper()
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _is_start_of_stored_routine(self, line):
+    def _is_start_of_stored_routine(self, line: str) -> bool:
         """
         Returns True if a line is the start of the code of the stored routine.
 
@@ -87,7 +88,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         return re.match(r'^\s*create\s+(function)', line, re.IGNORECASE) is not None
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _is_start_of_stored_routine_body(self, line):
+    def _is_start_of_stored_routine_body(self, line: str) -> bool:
         """
         Returns True if a line is the start of the body of the stored routine.
 
@@ -98,7 +99,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         return re.match(r'^\s*begin', line, re.IGNORECASE) is not None
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _load_routine_file(self):
+    def _load_routine_file(self) -> None:
         """
         Loads the stored routine into the MySQL instance.
         """
@@ -128,7 +129,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         PgSqlMetadataDataLayer.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _log_exception(self, exception):
+    def _log_exception(self, exception: Exception) -> None:
         """
         Logs an exception.
 
@@ -153,14 +154,14 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
                     self._print_sql_with_error(sql, error_line)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_bulk_insert_table_columns_info(self):
+    def _get_bulk_insert_table_columns_info(self) -> None:
         """
         Gets the column names and column types of the current table for bulk insert.
         """
         raise NotImplementedError()
 
     # ------------------------------------------------------------------------------------------------------------------
-    def get_bulk_insert_table_columns_info(self):
+    def get_bulk_insert_table_columns_info(self) -> None:
         """
         Gets the column names and column types of the current table for bulk insert.
         """
@@ -193,7 +194,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         self._fields = tmp_fields
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_routine_parameters_info(self):
+    def _get_routine_parameters_info(self) -> None:
         """
         Retrieves information about the stored routine parameters from the meta data of PostgreSQL.
         """
@@ -207,7 +208,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
                                          'data_type_descriptor':       value})
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _drop_routine(self):
+    def _drop_routine(self) -> None:
         """
         Drops the stored routine if it exists.
         """

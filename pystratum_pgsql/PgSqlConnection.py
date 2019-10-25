@@ -1,6 +1,8 @@
 """
 PyStratum
 """
+from pystratum.style.PyStratumStyle import PyStratumStyle
+
 from pystratum.Connection import Connection
 from pystratum.MetadataDataLayer import MetadataDataLayer
 
@@ -14,50 +16,50 @@ class PgSqlConnection(Connection):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self, io):
+    def __init__(self, io: PyStratumStyle):
         """
         Object constructor.
 
-        :param pystratum.style.PyStratumStyle.PyStratumStyle io: The output decorator.
+        :param PyStratumStyle io: The output decorator.
         """
         Connection.__init__(self, io)
 
-        self._host = 'localhost'
+        self._host: str = 'localhost'
         """
         The hostname of the PostgreSQL instance.
 
         :type: str
         """
 
-        self._port = 5432
+        self._port: int = 5432
         """
         The port of the PostgreSQL instance.
 
         :type: int
         """
 
-        self._user = ''
+        self._user: str = ''
         """
         User name.
 
         :type: str
         """
 
-        self._password = ''
+        self._password: str = ''
         """
         Password required for logging in on to the PostgreSQL instance.
 
         :type: str
         """
 
-        self._database = ''
+        self._database: str = ''
         """
         The database name.
 
         :type: str
         """
 
-        self._schema = ''
+        self._schema: str = ''
         """
         The schema name.
 
@@ -65,7 +67,7 @@ class PgSqlConnection(Connection):
         """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def connect(self):
+    def connect(self)-> None:
         """
         Connects to the PostgreSQL instance.
         """
@@ -79,14 +81,14 @@ class PgSqlConnection(Connection):
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def disconnect():
+    def disconnect() -> None:
         """
         Disconnects from the PostgreSQL instance.
         """
         PgSqlMetadataDataLayer.disconnect()
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _read_configuration_file(self, filename):
+    def _read_configuration_file(self, filename: str) -> None:
         """
         Reads connections parameters from the configuration file.
 

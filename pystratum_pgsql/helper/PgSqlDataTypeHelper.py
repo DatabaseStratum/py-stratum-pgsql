@@ -1,6 +1,7 @@
 """
 PyStratum
 """
+from typing import Dict
 
 from pystratum.helper.DataTypeHelper import DataTypeHelper
 
@@ -11,7 +12,7 @@ class PgSqlDataTypeHelper(DataTypeHelper):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def column_type_to_python_type(self, data_type_info):
+    def column_type_to_python_type(self, data_type_info: Dict) -> str:
         """
         Returns the corresponding Python data type of a PostgreSQL data type.
 

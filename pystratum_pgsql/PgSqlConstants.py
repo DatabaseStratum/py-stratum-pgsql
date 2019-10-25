@@ -3,6 +3,9 @@ PyStratum
 """
 import os
 import re
+from typing import Any, Dict
+
+from pystratum.style.PyStratumStyle import PyStratumStyle
 
 from pystratum.Constants import Constants
 from pystratum.Util import Util
@@ -16,16 +19,16 @@ class PgSqlConstants(PgSqlConnection, Constants):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self, io):
+    def __init__(self, io: PyStratumStyle):
         """
         Object constructor.
 
-        :param pystratum.style.PyStratumStyle.PyStratumStyle io: The output decorator.
+        :param PyStratumStyle io: The output decorator.
         """
         Constants.__init__(self, io)
         PgSqlConnection.__init__(self, io)
 
-        self._columns = {}
+        self._columns: Dict = {}
         """
         All columns in the MySQL schema.
 
@@ -33,7 +36,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
         """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_old_columns(self):
+    def _get_old_columns(self) -> None:
         """
         Reads from file constants_filename the previous table and column names, the width of the column,
         and the constant name (if assigned) and stores this data in old_columns.
@@ -76,7 +79,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
                                 self._old_columns[table_name] = {column_name: column_info}
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_columns(self):
+    def _get_columns(self) -> None:
         """
         Retrieves metadata all columns in the MySQL schema.
         """
@@ -94,7 +97,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
                 self._columns[row['table_name']] = {row['column_name']: row}
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _enhance_columns(self):
+    def _enhance_columns(self) -> None:
         """
         Enhances old_columns as follows:
         If the constant name is *, is is replaced with the column name prefixed by prefix in uppercase.
@@ -115,7 +118,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
                             self._old_columns[table_name][column_name]['constant_name'] = constant_name
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _merge_columns(self):
+    def _merge_columns(self) -> None:
         """
         Preserves relevant data in old_columns into columns.
         """
@@ -131,7 +134,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
                                              format(column['constant_name']))
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _write_columns(self):
+    def _write_columns(self) -> None:
         """
         Writes table and column names, the width of the column, and the constant name (if assigned) to
         constants_filename.
@@ -167,7 +170,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
         Util.write_two_phases(self._constants_filename, content, self._io)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_labels(self, regex):
+    def _get_labels(self, regex: str) -> None:
         """
         Gets all primary key labels from the MySQL database.
 
@@ -180,7 +183,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
                 self._labels[row['label']] = row['id']
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _fill_constants(self):
+    def _fill_constants(self) -> None:
         """
         Merges columns and labels (i.e. all known constants) into constants.
         """
@@ -194,7 +197,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def derive_field_length(column):
+    def derive_field_length(column: Dict[str, Any]) -> None:
         """
         Returns the width of a field based on the data type of column.
 
@@ -229,7 +232,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
         raise Exception("Unexpected type '{0!s}'.".format(column['data_type']))
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _read_configuration_file(self, config_filename):
+    def _read_configuration_file(self, config_filename: str) -> None:
         """
         Reads parameters from the configuration file.
 

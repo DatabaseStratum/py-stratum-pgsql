@@ -1,6 +1,8 @@
 """
 PyStratum
 """
+from typing import Union, List
+
 from pystratum.MetadataDataLayer import MetadataDataLayer
 from pystratum_pgsql.StaticDataLayer import StaticDataLayer
 
@@ -15,9 +17,10 @@ class PgSqlMetadataDataLayer(MetadataDataLayer):
 
     :type: pystratum_pgsql.StaticDataLayer.StaticDataLayer|None
     """
+
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def call_stored_routine(routine_name):
+    def call_stored_routine(routine_name: str) -> Union[int, None]:
         """
         Class a stored procedure without arguments.
 
@@ -31,7 +34,7 @@ class PgSqlMetadataDataLayer(MetadataDataLayer):
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def check_table_exists(table_name):
+    def check_table_exists(table_name: str) -> Union[int, None]:
         """
         Checks if a table exists in the current schema.
 
@@ -49,7 +52,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def commit():
+    def commit() -> None:
         """
         Commits the current transaction.
         """
@@ -57,7 +60,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def connect(host, database, schema, user, password, port=5432):
+    def connect(host: str, database: str, schema: str, user: str, password: str, port: int = 5432) -> None:
         """
         Connects to a PostgreSQL instance.
 
@@ -73,7 +76,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def describe_table(table_name):
+    def describe_table(table_name: str) -> List:
         """
         Describes a table.
 
@@ -87,7 +90,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def disconnect():
+    def disconnect() -> None:
         """
         Disconnects from the MySQL instance.
         """
@@ -95,7 +98,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def drop_stored_routine(routine_type, routine_name, routine_args):
+    def drop_stored_routine(routine_type: str, routine_name: str, routine_args: str) -> None:
         """
         Drops a stored routine if it exists.
 
@@ -109,7 +112,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def drop_temporary_table(table_name):
+    def drop_temporary_table(table_name: str) -> None:
         """
         Drops a temporary table.
 
@@ -121,7 +124,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def execute_none(query):
+    def execute_none(query: str) -> int:
         """
         Executes a query that does not select any rows.
 
@@ -135,7 +138,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def execute_rows(query):
+    def execute_rows(query: str) -> List:
         """
         Executes a query that selects 0 or more rows. Returns the selected rows (an empty list if no rows are selected).
 
@@ -149,7 +152,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def execute_singleton1(query):
+    def execute_singleton1(query: str) -> object:
         """
         Executes SQL statement that selects 1 row with 1 column. Returns the value of the selected column.
 
@@ -163,7 +166,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def get_all_table_columns():
+    def get_all_table_columns() -> List:
         """
         Selects metadata of all columns of all tables.
 
@@ -209,7 +212,7 @@ union all
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def get_label_tables(regex):
+    def get_label_tables(regex: str) -> List:
         """
         Selects metadata of tables with a label column.
 
@@ -235,7 +238,7 @@ and   t2.column_name ~ '{0}'
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def get_labels_from_table(table_name, id_column_name, label_column_name):
+    def get_labels_from_table(table_name: str, id_column_name: str, label_column_name: str) -> List:
         """
         Selects all labels from a table with labels.
 
@@ -257,7 +260,7 @@ where   nullif(\"{1}\",'') is not null""".format(id_column_name,
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def get_routine_parameters(routine_name):
+    def get_routine_parameters(routine_name: str) -> List:
         """
         Selects metadata of the parameters of a stored routine.
 
@@ -283,20 +286,20 @@ order by t2.ordinal_position""" % routine_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def get_routines():
+    def get_routines() -> List:
         """
         Selects metadata of all routines in the current schema.
 
         :rtype: list[dict[str,Object]]
         """
         sql = """
-select t1.routine_name                                                                        routine_name
-,      t1.routine_type                                                                        routine_type
+select t1.routine_name                                                                        as routine_name
+,      t1.routine_type                                                                        as routine_type
 ,      array_to_string(array_agg(case when (parameter_name is not null) then
                                    concat(t2.parameter_mode, ' ',
                                           t2.parameter_name, ' ',
                                           t2.udt_name)
-                                 end order by t2.ordinal_position asc), ',')                  routine_args
+                                 end order by t2.ordinal_position asc), ',')                  as routine_args
 from            information_schema.routines   t1
 left outer join information_schema.parameters t2  on  t2.specific_catalog = t1.specific_catalog and
                                                       t2.specific_schema  = t1.specific_schema and
@@ -313,7 +316,7 @@ order by routine_name
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def rollback():
+    def rollback() -> None:
         """
         Rollbacks the current transaction.
         """
