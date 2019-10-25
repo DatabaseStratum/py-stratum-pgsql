@@ -36,7 +36,6 @@ class AAATest(unittest.TestCase):
         command_tester = CommandTester(command)
         status = command_tester.execute([('command', command.get_name()),
                                          ('config_file', 'pystratum_test/etc/stratum.cfg')])
-        print(command_tester.get_display())
 
         self.assertEqual(0, status)
 
