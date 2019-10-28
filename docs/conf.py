@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 
-project = u'Stratum PostgreSQL'
+project = u'PyStratum PostgreSQL'
 copyright = u'2019, P.R. Water'
 author = u'P.R. Water'
 
@@ -105,7 +105,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Kerapudoc'
+htmlhelp_basename = 'PyStratumdoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -132,7 +132,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Kerapu.tex', u'Kerapu Documentation',
+    (master_doc, 'PyStratum-pgSQL.tex', u'PyStratum PostgreSQL Documentation',
      u'P.R. Water', 'manual'),
 ]
 
@@ -142,7 +142,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'kerapu', u'Kerapu Documentation',
+    (master_doc, 'pystratum-pgsql', u'Stratum PostgreSQL Documentation',
      [author], 1)
 ]
 
@@ -153,8 +153,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Kerapu', u'Kerapu Documentation',
-     author, 'Kerapu', 'One line description of project.',
+    (master_doc, 'PyStratum-pgSQL', u'Stratum PostgreSQL Documentation',
+     author, 'PyStratum-pgSQL', 'One line description of project.',
      'Miscellaneous'),
 ]
 
