@@ -1,32 +1,37 @@
 filter:
-    excluded_paths:
-        - pystratum_test/*
+  excluded_paths:
+    - pystratum_test/*
 
 before_commands:
-    - sudo pip3 install cleo
-    - sudo pip3 install coverage
-    - sudo pip3 install psycopg2
-    - sudo pip3 install pystratum
+  - sudo pip3 install cleo
+  - sudo pip3 install coverage
+  - sudo pip3 install psycopg2
+  - sudo pip3 install pystratum
 
 build:
-    dependencies:
-        before:
-          - pip3 install cleo
-          - pip3 install coverage
-          - pip3 install psycopg2
-          - pip3 install pystratum
+  dependencies:
+    before:
+      - pip3 install cleo
+      - pip3 install coverage
+      - pip3 install psycopg2
+      - pip3 install pystratum
 
-    tests:
-        before:
-          - psql -c "create user test with password 'test';"
-          - psql -c "create database test owner=test;"
-          - psql -c "create schema test authorization test;" test
+  tests:
+    before:
+      - psql -c "create user test with password 'test';"
+      - psql -c "create database test owner=test;"
+      - psql -c "create schema test authorization test;" test
 
+    override:
+      - command: coverage run -m unittest discover -s pystratum_test -p *Test.py
+        coverage:
+          file: '.coverage'
+          config_file: '.coveragerc'
+          format: 'py-cc'
+
+  nodes:
+    analysis:
+      tests:
         override:
-            -
-                command: coverage run -m unittest discover -s pystratum_test -p *Test.py
-                coverage:
-                    file: '.coverage'
-                    config_file: '.coveragerc'
-                    format: 'py-cc'
+          - py-scrutinizer-run
 
