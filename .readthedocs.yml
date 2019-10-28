@@ -8,5 +8,6 @@ formats: all
 python:
   install:
     - requirements: docs/requirements.txt
-    - method: pip
+    - method: setuptools
+      path: .
   system_packages: true
