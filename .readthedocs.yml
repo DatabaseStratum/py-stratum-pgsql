@@ -7,5 +7,6 @@ formats: all
 
 python:
   install:
+    - requirements: docs/requirements.txt
     - method: pip
   system_packages: true
