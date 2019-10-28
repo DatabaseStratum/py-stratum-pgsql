@@ -1,11 +1,11 @@
 Pystratum PostgreSQL
 ====================
 
-Een implementatie van de Grouper in Python.
+A stored procedure and function loader and wrapper generator for PostgreSQL Python.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Inhoud:
+   :caption: Contents:
 
-   licentie
+   licence
    api/modules
