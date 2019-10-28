@@ -4,3 +4,7 @@ sphinx:
   configuration: docs/conf.py
 
 formats: all
+
+python:
+  setup_py_install: true
+  pip_install: true
