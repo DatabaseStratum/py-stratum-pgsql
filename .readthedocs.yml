@@ -6,5 +6,6 @@ sphinx:
 formats: all
 
 python:
-  setup_py_install: true
-  pip_install: true
+  install:
+    - method: pip
+  system_packages: true
