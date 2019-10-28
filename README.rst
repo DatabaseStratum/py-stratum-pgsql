@@ -1,5 +1,6 @@
-PyStratum
-=========
+PyStratum pgSQL
+===============
+
 A stored procedure and function loader, wrapper generator for PostgreSQL in Python.
 
 +-----------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -13,20 +14,19 @@ A stored procedure and function loader, wrapper generator for PostgreSQL in Pyth
 
 Overview
 ========
-PyStratum is a tool and library with the following mayor functionalities:
+PyStratum pgSQL is a tool and library with the following mayor functionalities:
 
-* Loading modified and new stored routines and removing obsolete stored routines into/from a MySQL, SQL Server, or PostgreSQL instance. This MySQL, SQL Server, or PostgreSQL instance can be part of your development or a production environment.
-* Enhancing the (limited) syntax of MySQL, SQL Server, and PostgreSQL stored routines with constants and custom types (based on actual table columns).
+* Loading modified and new stored routines and removing obsolete stored routines into/from a PostgreSQL instance. This PostgreSQL instance can be part of your development or a production environment.
+* Enhancing the PostgreSQL stored routines with constants and custom types (based on actual table columns).
 * Generating automatically a Python wrapper class for calling your stored routines. This wrapper class takes care about error handing and prevents SQL injections.
 * Defining Python constants based on auto increment columns and column widths.
 
-Status
-======
-Currently this project is under development and for more information we refer to its sister project.
+Documentation
+=============
 
-Sister Project 
-==============
-We are also working on PhpStratum_. PhpStratum_ provides the same functionalities as PyStratum but in a PHP 
-environment and supports MySQL only.
+The documentation of PyStratum pgSQL is available at https://pystratum-pgsql.readthedocs.io/en/latest/ and the general documentation of all Stratum projects is available at https://stratum.readthedocs.io/.
 
-.. _PhpStratum: https://github.com/SetBased/php-stratum
+License
+=======
+
+This project is licensed under the terms of the MIT license.
