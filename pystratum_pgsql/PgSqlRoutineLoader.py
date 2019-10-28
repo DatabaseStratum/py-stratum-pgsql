@@ -30,7 +30,8 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
     # ------------------------------------------------------------------------------------------------------------------
     def _get_column_type(self) -> None:
         """
-        Selects schema, table, column names and the column type from MySQL and saves them as replace pairs.
+        Selects schema, table, column names and the column type from current database and information_schema and saves
+        them as replace pairs.
         """
         rows = PgSqlMetadataDataLayer.get_all_table_columns()
         for row in rows:

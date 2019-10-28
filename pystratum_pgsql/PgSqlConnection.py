@@ -67,7 +67,7 @@ class PgSqlConnection(Connection):
         """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def connect(self)-> None:
+    def connect(self) -> None:
         """
         Connects to the PostgreSQL instance.
         """

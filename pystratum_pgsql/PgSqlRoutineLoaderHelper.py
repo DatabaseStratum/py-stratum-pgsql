@@ -101,7 +101,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
     # ------------------------------------------------------------------------------------------------------------------
     def _load_routine_file(self) -> None:
         """
-        Loads the stored routine into the MySQL instance.
+        Loads the stored routine into the PostgreSQL instance.
         """
         self._io.text('Loading {0} <dbo>{1}</dbo>'.format(self._routine_type, self._routine_name))
 
@@ -203,9 +203,9 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
             if routine_parameter['parameter_name']:
                 value = routine_parameter['column_type']
 
-                self._parameters.append({'name': routine_parameter     ['parameter_name'],
-                                         'data_type': routine_parameter['parameter_type'],
-                                         'data_type_descriptor':       value})
+                self._parameters.append({'name':                 routine_parameter['parameter_name'],
+                                         'data_type':            routine_parameter['parameter_type'],
+                                         'data_type_descriptor': value})
 
     # ------------------------------------------------------------------------------------------------------------------
     def _drop_routine(self) -> None:

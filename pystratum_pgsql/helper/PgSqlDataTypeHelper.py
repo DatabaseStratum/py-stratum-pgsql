@@ -58,7 +58,7 @@ class PgSqlDataTypeHelper(DataTypeHelper):
         """
         Returns the corresponding Python data type hinting of a PostgreSQL data type.
 
-        :param dict data_type_info: The MySQL data type metadata.
+        :param dict data_type_info: The PostgreSQL data type metadata.
 
         :rtype: str
         """

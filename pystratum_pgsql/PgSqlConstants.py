@@ -30,7 +30,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
 
         self._columns: Dict = {}
         """
-        All columns in the MySQL schema.
+        Metadata of all columns in the current schema and information_schema.
 
         :type: dict
         """
@@ -81,7 +81,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
     # ------------------------------------------------------------------------------------------------------------------
     def _get_columns(self) -> None:
         """
-        Retrieves metadata all columns in the MySQL schema.
+        Retrieves metadata all columns in the current schema and information_schema.
         """
         rows = PgSqlMetadataDataLayer.get_all_table_columns()
         for row in rows:
@@ -172,7 +172,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
     # ------------------------------------------------------------------------------------------------------------------
     def _get_labels(self, regex: str) -> None:
         """
-        Gets all primary key labels from the MySQL database.
+        Gets all primary key labels from the current schema.
 
         :param str regex: The regular expression for columns which we want to use.
         """
@@ -197,7 +197,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def derive_field_length(column: Dict[str, Any]) -> None:
+    def derive_field_length(column: Dict[str, Any]) -> int:
         """
         Returns the width of a field based on the data type of column.
 
@@ -208,19 +208,19 @@ class PgSqlConstants(PgSqlConnection, Constants):
         types_length = {'bigint':                      21,
                         'integer':                     11,
                         'smallint':                    6,
-                        'bit': column                  ['character_maximum_length'],
-                        'money':                       None,  # @todo max-length
-                        'boolean':                     None,  # @todo max-length
-                        'double': column               ['numeric_precision'],
-                        'numeric': column              ['numeric_precision'],
-                        'real':                        None,  # @todo max-length
-                        'character': column            ['character_maximum_length'],
-                        'character varying': column    ['character_maximum_length'],
-                        'point':                       None,  # @todo max-length
-                        'polygon':                     None,  # @todo max-length
-                        'text':                        None,  # @todo max-length
-                        'bytea':                       None,  # @todo max-length
-                        'xml':                         None,  # @todo max-length
+                        'bit':                         column['character_maximum_length'],
+                        'money':                       None,
+                        'boolean':                     None,
+                        'double':                      column['numeric_precision'],
+                        'numeric':                     column['numeric_precision'],
+                        'real':                        None,
+                        'character':                   column['character_maximum_length'],
+                        'character varying':           column['character_maximum_length'],
+                        'point':                       None,
+                        'polygon':                     None,
+                        'text':                        None,
+                        'bytea':                       None,
+                        'xml':                         None,
                         'USER-DEFINED':                None,
                         'timestamp without time zone': 16,
                         'time without time zone':      8,

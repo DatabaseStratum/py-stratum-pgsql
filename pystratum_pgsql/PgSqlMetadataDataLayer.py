@@ -92,7 +92,7 @@ and   TABLE_NAME   = '{0}'""" % table_name
     @staticmethod
     def disconnect() -> None:
         """
-        Disconnects from the MySQL instance.
+        Disconnects from the PostgreSQL instance.
         """
         PgSqlMetadataDataLayer.__dl.disconnect()
 
@@ -299,7 +299,7 @@ select t1.routine_name                                                          
                                    concat(t2.parameter_mode, ' ',
                                           t2.parameter_name, ' ',
                                           t2.udt_name)
-                                 end order by t2.ordinal_position asc), ',')                  as routine_args
+                                 end order by t2.ordinal_position), ',')                      as routine_args
 from            information_schema.routines   t1
 left outer join information_schema.parameters t2  on  t2.specific_catalog = t1.specific_catalog and
                                                       t2.specific_schema  = t1.specific_schema and
