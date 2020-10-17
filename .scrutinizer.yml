@@ -17,9 +17,9 @@ build:
     analysis:
       tests:
         before:
-          - sudo - postgres psql -c "create user test with password 'test';"
-          - sudo - postgres psql -c "create database test owner=test;"
-          - sudo - postgres psql -c "create schema test authorization test;" test
+          - sudo -u postgres psql -c "create user test with password 'test';"
+          - sudo -u postgres psql -c "create database test owner=test;"
+          - sudo -u postgres psql -c "create schema test authorization test;" test
         override:
           - command: bin/phing unit
             coverage:
