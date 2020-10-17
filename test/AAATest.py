@@ -8,7 +8,6 @@ class AAATest(StratumTestCase):
     """
     This test must run before all other tests because this test loads the stored routines.
     """
-
     # ------------------------------------------------------------------------------------------------------------------
     def test0(self):
         """
@@ -28,6 +27,9 @@ class AAATest(StratumTestCase):
         command_tester = CommandTester(command)
         status = command_tester.execute([('command', command.get_name()),
                                          ('config_file', 'test/etc/stratum.cfg')])
+
+        if status != 0:
+            print(command_tester.get_display())
 
         self.assertEqual(0, status)
 
