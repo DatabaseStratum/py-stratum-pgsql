@@ -17,14 +17,14 @@ class StratumTestCase(unittest.TestCase):
         """
         super().__init__(method_name)
 
-        params = {'host':     'localhost',
+        params = {'host':     '127.0.0.1',
                   'user':     'test',
                   'password': 'test',
                   'database': 'test',
                   'schema':   'test',
                   'port':     5432}
 
-        self._dl: TestDataLayer = TestDataLayer(PgSqlDefaultConnector(params))
+        self._dl = TestDataLayer(PgSqlDefaultConnector(params))
         """
         The generated data layer.
         """

@@ -10,6 +10,15 @@ class AAATest(StratumTestCase):
     """
 
     # ------------------------------------------------------------------------------------------------------------------
+    def test0(self):
+        """
+        Create tables.
+        """
+        with open('test/ddl/create_tables.sql') as file:
+            sql = file.read()
+            self._dl.execute_none(sql)
+
+    # ------------------------------------------------------------------------------------------------------------------
     def test1(self):
         """
         Runs the stratum command: loads the stored routines and generates the stored routine wrapper.
