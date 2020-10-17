@@ -16,6 +16,7 @@ class AAATest(StratumTestCase):
         with open('test/ddl/create_tables.sql') as file:
             sql = file.read()
             self._dl.execute_none(sql)
+            self._dl.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
     def test1(self):
@@ -28,9 +29,6 @@ class AAATest(StratumTestCase):
         status = command_tester.execute([('command', command.get_name()),
                                          ('config_file', 'test/etc/stratum.cfg')])
 
-        if status != 0:
-            print(command_tester.get_display())
-
-        self.assertEqual(0, status)
+        self.assertEqual(0, status, command_tester.get_display())
 
 # ----------------------------------------------------------------------------------------------------------------------
