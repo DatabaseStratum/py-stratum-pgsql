@@ -5,7 +5,7 @@ filter:
 build:
   dependencies:
     before:
-      - pip3 install cleo==0.8.6
+      - pip3 install cleo==0.6.8
       - pip3 install coverage
       - pip3 install psycopg2
       - pip3 install PyStratum-Backend
