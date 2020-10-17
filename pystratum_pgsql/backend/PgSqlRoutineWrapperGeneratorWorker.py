@@ -1,40 +1,27 @@
-"""
-PyStratum
-"""
+from configparser import ConfigParser
 from typing import Dict
 
-from pystratum.style.PyStratumStyle import PyStratumStyle
+from pystratum_backend.StratumStyle import StratumStyle
+from pystratum_common.backend.CommonRoutineWrapperGeneratorWorker import CommonRoutineWrapperGeneratorWorker
 
-from pystratum.RoutineWrapperGenerator import RoutineWrapperGenerator
-
-from pystratum_pgsql.PgSqlConnection import PgSqlConnection
+from pystratum_pgsql.backend.PgSqlWorker import PgSqlWorker
 from pystratum_pgsql.wrapper import create_routine_wrapper
 
 
-class PgSqlRoutineWrapperGenerator(PgSqlConnection, RoutineWrapperGenerator):
+class PgSqlRoutineWrapperGeneratorWorker(PgSqlWorker, CommonRoutineWrapperGeneratorWorker):
     """
     Class for generating a class with wrapper methods for calling stored routines in a PostgreSQL database.
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self, io: PyStratumStyle):
+    def __init__(self, io: StratumStyle, config: ConfigParser):
         """
         Object constructor.
 
         :param PyStratumStyle io: The output decorator.
         """
-        PgSqlConnection.__init__(self, io)
-        RoutineWrapperGenerator.__init__(self, io)
-
-    # ------------------------------------------------------------------------------------------------------------------
-    def _read_configuration_file(self, config_filename: str) -> None:
-        """
-        Reads parameters from the configuration file.
-
-        :param str config_filename: The name of the configuration file.
-        """
-        PgSqlConnection._read_configuration_file(self, config_filename)
-        RoutineWrapperGenerator._read_configuration_file(self, config_filename)
+        PgSqlWorker.__init__(self, io, config)
+        CommonRoutineWrapperGeneratorWorker.__init__(self, io, config)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _write_routine_function(self, routine: Dict) -> None:

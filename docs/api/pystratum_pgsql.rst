@@ -5,25 +5,35 @@ Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
+   pystratum_pgsql.backend
    pystratum_pgsql.helper
    pystratum_pgsql.wrapper
 
 Submodules
 ----------
 
-pystratum\_pgsql.PgSqlConnection module
----------------------------------------
+pystratum\_pgsql.PgSqlConnector module
+--------------------------------------
 
-.. automodule:: pystratum_pgsql.PgSqlConnection
+.. automodule:: pystratum_pgsql.PgSqlConnector
    :members:
    :undoc-members:
    :show-inheritance:
 
-pystratum\_pgsql.PgSqlConstants module
+pystratum\_pgsql.PgSqlDataLayer module
 --------------------------------------
 
-.. automodule:: pystratum_pgsql.PgSqlConstants
+.. automodule:: pystratum_pgsql.PgSqlDataLayer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pystratum\_pgsql.PgSqlDefaultConnector module
+---------------------------------------------
+
+.. automodule:: pystratum_pgsql.PgSqlDefaultConnector
    :members:
    :undoc-members:
    :show-inheritance:
@@ -35,39 +45,6 @@ pystratum\_pgsql.PgSqlMetadataDataLayer module
    :members:
    :undoc-members:
    :show-inheritance:
-
-pystratum\_pgsql.PgSqlRoutineLoader module
-------------------------------------------
-
-.. automodule:: pystratum_pgsql.PgSqlRoutineLoader
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pystratum\_pgsql.PgSqlRoutineLoaderHelper module
-------------------------------------------------
-
-.. automodule:: pystratum_pgsql.PgSqlRoutineLoaderHelper
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pystratum\_pgsql.PgSqlRoutineWrapperGenerator module
-----------------------------------------------------
-
-.. automodule:: pystratum_pgsql.PgSqlRoutineWrapperGenerator
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pystratum\_pgsql.StaticDataLayer module
----------------------------------------
-
-.. automodule:: pystratum_pgsql.StaticDataLayer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 
 Module contents
 ---------------

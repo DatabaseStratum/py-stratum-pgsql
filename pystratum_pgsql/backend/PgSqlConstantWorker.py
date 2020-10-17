@@ -1,34 +1,31 @@
-"""
-PyStratum
-"""
 import os
 import re
-from typing import Any, Dict
+from configparser import ConfigParser
+from typing import Any, Dict, Optional
 
-from pystratum.style.PyStratumStyle import PyStratumStyle
+from pystratum_backend.StratumStyle import StratumStyle
+from pystratum_common.backend.CommonConstantWorker import CommonConstantWorker
+from pystratum_common.Util import Util
 
-from pystratum.Constants import Constants
-from pystratum.Util import Util
-from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
-from pystratum_pgsql.PgSqlConnection import PgSqlConnection
+from pystratum_pgsql.backend.PgSqlWorker import PgSqlWorker
 
 
-class PgSqlConstants(PgSqlConnection, Constants):
+class PgSqlConstantWorker(PgSqlWorker, CommonConstantWorker):
     """
     Class for creating constants based on column widths, and auto increment columns and labels for PostgreSQL databases.
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self, io: PyStratumStyle):
+    def __init__(self, io: StratumStyle, config: ConfigParser):
         """
         Object constructor.
 
         :param PyStratumStyle io: The output decorator.
         """
-        Constants.__init__(self, io)
-        PgSqlConnection.__init__(self, io)
+        PgSqlWorker.__init__(self, io, config)
+        CommonConstantWorker.__init__(self, io, config)
 
-        self._columns: Dict = {}
+        self._columns: Dict[str, Any] = {}
         """
         Metadata of all columns in the current schema and information_schema.
 
@@ -83,7 +80,7 @@ class PgSqlConstants(PgSqlConnection, Constants):
         """
         Retrieves metadata all columns in the current schema and information_schema.
         """
-        rows = PgSqlMetadataDataLayer.get_all_table_columns()
+        rows = self._dl.get_all_table_columns()
         for row in rows:
             # Enhance row with the actual length of the column.
             row['length'] = self.derive_field_length(row)
@@ -170,15 +167,13 @@ class PgSqlConstants(PgSqlConnection, Constants):
         Util.write_two_phases(self._constants_filename, content, self._io)
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _get_labels(self, regex: str) -> None:
+    def _get_labels(self) -> None:
         """
         Gets all primary key labels from the current schema.
-
-        :param str regex: The regular expression for columns which we want to use.
         """
-        tables = PgSqlMetadataDataLayer.get_label_tables(regex)
+        tables = self._dl.get_label_tables(self._label_regex)
         for table in tables:
-            rows = PgSqlMetadataDataLayer.get_labels_from_table(table['table_name'], table['id'], table['label'])
+            rows = self._dl.get_labels_from_table(table['table_name'], table['id'], table['label'])
             for row in rows:
                 self._labels[row['label']] = row['id']
 
@@ -197,13 +192,13 @@ class PgSqlConstants(PgSqlConnection, Constants):
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def derive_field_length(column: Dict[str, Any]) -> int:
+    def derive_field_length(column: Dict[str, Any]) -> Optional[int]:
         """
         Returns the width of a field based on the data type of column.
 
         :param dict column: The column of which the field is based.
 
-        :rtype: int
+        :rtype: int|None
         """
         types_length = {'bigint':                      21,
                         'integer':                     11,
@@ -232,13 +227,10 @@ class PgSqlConstants(PgSqlConnection, Constants):
         raise Exception("Unexpected type '{0!s}'.".format(column['data_type']))
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _read_configuration_file(self, config_filename: str) -> None:
+    def _read_configuration_file(self) -> None:
         """
         Reads parameters from the configuration file.
-
-        :param str config_filename:
         """
-        Constants._read_configuration_file(self, config_filename)
-        PgSqlConnection._read_configuration_file(self, config_filename)
+        CommonConstantWorker._read_configuration_file(self)
 
 # ----------------------------------------------------------------------------------------------------------------------

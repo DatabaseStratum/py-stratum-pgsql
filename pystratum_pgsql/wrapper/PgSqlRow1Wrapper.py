@@ -1,9 +1,7 @@
-"""
-PyStratum
-"""
-from typing import Dict, Any
+from typing import Any, Dict
 
-from pystratum.wrapper.Row1Wrapper import Row1Wrapper
+from pystratum_common.wrapper.Row1Wrapper import Row1Wrapper
+
 from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
 
 
@@ -19,6 +17,6 @@ class PgSqlRow1Wrapper(PgSqlWrapper, Row1Wrapper):
 
         :param dict routine: Metadata of the stored routine.
         """
-        self._write_line('return StaticDataLayer.execute_sp_row1({0!s})'.format(self._generate_command(routine)))
+        self._write_line('return self.execute_sp_row1({0!s})'.format(self._generate_command(routine)))
 
 # ----------------------------------------------------------------------------------------------------------------------

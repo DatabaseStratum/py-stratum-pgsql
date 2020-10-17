@@ -1,31 +1,27 @@
-"""
-PyStratum
-"""
-from typing import Dict
+from configparser import ConfigParser
+from typing import Dict, Optional
 
-from pystratum.style.PyStratumStyle import PyStratumStyle
+from pystratum_backend.StratumStyle import StratumStyle
+from pystratum_common.backend.CommonRoutineLoaderWorker import CommonRoutineLoaderWorker
 
-from pystratum.RoutineLoader import RoutineLoader
-
-from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
-from pystratum_pgsql.PgSqlConnection import PgSqlConnection
-from pystratum_pgsql.PgSqlRoutineLoaderHelper import PgSqlRoutineLoaderHelper
+from pystratum_pgsql.backend.PgSqlWorker import PgSqlWorker
+from pystratum_pgsql.helper.PgSqlRoutineLoaderHelper import PgSqlRoutineLoaderHelper
 
 
-class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
+class PgSqlRoutineLoaderWorker(PgSqlWorker, CommonRoutineLoaderWorker):
     """
     Class for loading stored routines into a PostgreSQL instance from (pseudo) SQL files.
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    def __init__(self, io: PyStratumStyle):
+    def __init__(self, io: StratumStyle, config: ConfigParser):
         """
         Object constructor.
 
         :param PyStratumStyle io: The output decorator.
         """
-        RoutineLoader.__init__(self, io)
-        PgSqlConnection.__init__(self, io)
+        PgSqlWorker.__init__(self, io, config)
+        CommonRoutineLoaderWorker.__init__(self, io, config)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_column_type(self) -> None:
@@ -33,7 +29,7 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         Selects schema, table, column names and the column type from current database and information_schema and saves
         them as replace pairs.
         """
-        rows = PgSqlMetadataDataLayer.get_all_table_columns()
+        rows = self._dl.get_all_table_columns()
         for row in rows:
             key = '@' + row['table_name'] + '.' + row['column_name'] + '%type@'
             key = key.lower()
@@ -45,9 +41,9 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
 
     # ------------------------------------------------------------------------------------------------------------------
     def create_routine_loader_helper(self,
-                                     routine_name: Dict,
-                                     pystratum_old_metadata: Dict,
-                                     rdbms_old_metadata: Dict) -> PgSqlRoutineLoaderHelper:
+                                     routine_name: str,
+                                     pystratum_old_metadata: Optional[Dict],
+                                     rdbms_old_metadata: Optional[Dict]) -> PgSqlRoutineLoaderHelper:
         """
         Creates a Routine Loader Helper object.
 
@@ -57,19 +53,20 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
 
         :rtype: PgSqlRoutineLoaderHelper
         """
-        return PgSqlRoutineLoaderHelper(self._source_file_names[routine_name],
+        return PgSqlRoutineLoaderHelper(self._io,
+                                        self._dl,
+                                        self._source_file_names[routine_name],
                                         self._source_file_encoding,
                                         pystratum_old_metadata,
                                         self._replace_pairs,
-                                        rdbms_old_metadata,
-                                        self._io)
+                                        rdbms_old_metadata)
 
     # ------------------------------------------------------------------------------------------------------------------
     def _get_old_stored_routine_info(self) -> None:
         """
         Retrieves information about all stored routines in the current schema.
         """
-        rows = PgSqlMetadataDataLayer.get_routines()
+        rows = self._dl.get_routines()
         self._rdbms_old_metadata = {}
         for row in rows:
             self._rdbms_old_metadata[row['routine_name']] = row
@@ -83,16 +80,6 @@ class PgSqlRoutineLoader(PgSqlConnection, RoutineLoader):
         for routine_name, values in self._rdbms_old_metadata.items():
             if routine_name not in self._source_file_names:
                 self._io.text("Dropping {0} <dbo>{1}</dbo>".format(values['routine_type'], routine_name))
-                PgSqlMetadataDataLayer.drop_stored_routine(values['routine_type'], routine_name, values['routine_args'])
-
-    # ------------------------------------------------------------------------------------------------------------------
-    def _read_configuration_file(self, config_filename: str) -> None:
-        """
-        Reads parameters from the configuration file.
-
-        :param string config_filename:
-        """
-        RoutineLoader._read_configuration_file(self, config_filename)
-        PgSqlConnection._read_configuration_file(self, config_filename)
+                self._dl.drop_stored_routine(values['routine_type'], routine_name, values['routine_args'])
 
 # ----------------------------------------------------------------------------------------------------------------------

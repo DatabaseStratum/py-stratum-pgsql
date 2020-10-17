@@ -1,9 +1,7 @@
-"""
-PyStratum
-"""
-from typing import Dict, Any
+from typing import Any, Dict
 
-from pystratum.wrapper.Singleton1Wrapper import Singleton1Wrapper
+from pystratum_common.wrapper.Singleton1Wrapper import Singleton1Wrapper
+
 from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
 
 
@@ -20,6 +18,6 @@ class PgSqlSingleton1Wrapper(PgSqlWrapper, Singleton1Wrapper):
         :param dict routine: Metadata of the stored routine.
         """
         self._write_line(
-            'return StaticDataLayer.execute_sp_singleton1({0!s})'.format(str(self._generate_command(routine))))
+                'return self.execute_sp_singleton1({0!s})'.format(str(self._generate_command(routine))))
 
 # ----------------------------------------------------------------------------------------------------------------------

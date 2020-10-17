@@ -11,12 +11,12 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='PyStratum-pgSQL',
 
-    version='0.10.10',
+    version='0.0.0',
 
-    description='A stored procedure/function loader and wrapper generator for PostgresSQL',
+    description='PyStratum-pgSQL: PostgresSQL Backend',
     long_description=long_description,
 
-    url='https://github.com/SetBased/py-stratum-pgsql',
+    url='https://github.com/DatabaseStratum/py-stratum-pgsql',
 
     author='Set Based IT Consultancy',
     author_email='info@setbased.nl',
@@ -37,11 +37,12 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
 
-    keywords='stored procedures, loader, wrapper, PL/pgSQL, PostgresSQL',
+    keywords='PyStratum, PL/pgSQL, PostgresSQL',
 
-    packages=find_packages(exclude=['build', 'pystratum_test']),
+    packages=find_packages(exclude=['build', 'test']),
 
-    install_requires=['pystratum>=0.10.20', 'psycopg2'],
+    install_requires=['psycopg2'],
 )

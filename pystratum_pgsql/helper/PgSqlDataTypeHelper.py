@@ -1,9 +1,6 @@
-"""
-PyStratum
-"""
-from typing import Dict, Any
+from typing import Any, Dict
 
-from pystratum.helper.DataTypeHelper import DataTypeHelper
+from pystratum_common.helper.DataTypeHelper import DataTypeHelper
 
 
 class PgSqlDataTypeHelper(DataTypeHelper):
@@ -77,7 +74,7 @@ class PgSqlDataTypeHelper(DataTypeHelper):
             return 'Optional[str]'
 
         if data_type_info['data_type'] == 'numeric':
-            return 'Union[float|int|None]'
+            return 'Union[float, int, None]'
 
         if data_type_info['data_type'] in ['real',
                                            'double',

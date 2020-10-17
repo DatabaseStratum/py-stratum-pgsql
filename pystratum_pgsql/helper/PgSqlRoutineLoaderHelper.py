@@ -1,20 +1,52 @@
-"""
-PyStratum
-"""
 import re
+from typing import Dict
 
 from psycopg2 import ProgrammingError
+from pystratum_backend.StratumStyle import StratumStyle
+from pystratum_common.helper.DataTypeHelper import DataTypeHelper
+from pystratum_common.helper.RoutineLoaderHelper import RoutineLoaderHelper
 
-from pystratum.RoutineLoaderHelper import RoutineLoaderHelper
-from pystratum.helper.DataTypeHelper import DataTypeHelper
-from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
 from pystratum_pgsql.helper.PgSqlDataTypeHelper import PgSqlDataTypeHelper
+from pystratum_pgsql.PgSqlMetadataDataLayer import PgSqlMetadataDataLayer
 
 
 class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
     """
     Class for loading a single stored routine into a PostgreSQL instance from a (pseudo) SQL file.
     """
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def __init__(self,
+                 io: StratumStyle,
+                 dl: PgSqlMetadataDataLayer,
+                 routine_filename: str,
+                 routine_file_encoding: str,
+                 pystratum_old_metadata: Dict,
+                 replace_pairs: Dict[str, str],
+                 rdbms_old_metadata: Dict):
+        """
+        Object constructor.
+                                
+        :param PyStratumStyle io: The output decorator.
+        :param PgSqlMetadataDataLayer dl: The metadata layer.
+        :param str routine_filename: The filename of the source of the stored routine.
+        :param str routine_file_encoding: The encoding of the source file.
+        :param dict pystratum_old_metadata: The metadata of the stored routine from PyStratum.
+        :param dict[str,str] replace_pairs: A map from placeholders to their actual values.
+        :param dict rdbms_old_metadata: The old metadata of the stored routine from MS SQL Server.
+        """
+        RoutineLoaderHelper.__init__(self,
+                                     io,
+                                     routine_filename,
+                                     routine_file_encoding,
+                                     pystratum_old_metadata,
+                                     replace_pairs,
+                                     rdbms_old_metadata)
+
+        self._dl: PgSqlMetadataDataLayer = dl
+        """
+        The metadata layer.
+        """
 
     # ------------------------------------------------------------------------------------------------------------------
     def _must_reload(self):
@@ -124,9 +156,9 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         self._unset_magic_constants()
         self._drop_routine()
 
-        PgSqlMetadataDataLayer.commit()
-        PgSqlMetadataDataLayer.execute_none(routine_source)
-        PgSqlMetadataDataLayer.commit()
+        self._dl.commit()
+        self._dl.execute_none(routine_source)
+        self._dl.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
     def _log_exception(self, exception: Exception) -> None:
@@ -135,7 +167,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
 
         :param Exception exception: The exception.
         """
-        PgSqlMetadataDataLayer.rollback()
+        self._dl.rollback()
 
         RoutineLoaderHelper._log_exception(self, exception)
 
@@ -165,12 +197,12 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         """
         Gets the column names and column types of the current table for bulk insert.
         """
-        table_is_non_temporary = PgSqlMetadataDataLayer.check_table_exists(self._table_name)
+        table_is_non_temporary = self._dl.check_table_exists(self._table_name)
 
         if not table_is_non_temporary:
-            PgSqlMetadataDataLayer.call_stored_routine(self._routine_name)
+            self._dl.call_stored_routine(self._routine_name)
 
-        columns = PgSqlMetadataDataLayer.describe_table(self._table_name)
+        columns = self._dl.describe_table(self._table_name)
 
         tmp_column_types = []
         tmp_fields = []
@@ -185,7 +217,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         n2 = len(self._columns)
 
         if not table_is_non_temporary:
-            PgSqlMetadataDataLayer.drop_temporary_table(self._table_name)
+            self._dl.drop_temporary_table(self._table_name)
 
         if n1 != n2:
             raise Exception("Number of fields %d and number of columns %d don't match." % (n1, n2))
@@ -198,7 +230,7 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         """
         Retrieves information about the stored routine parameters from the meta data of PostgreSQL.
         """
-        routine_parameters = PgSqlMetadataDataLayer.get_routine_parameters(self._routine_name)
+        routine_parameters = self._dl.get_routine_parameters(self._routine_name)
         for routine_parameter in routine_parameters:
             if routine_parameter['parameter_name']:
                 value = routine_parameter['column_type']
@@ -213,8 +245,8 @@ class PgSqlRoutineLoaderHelper(RoutineLoaderHelper):
         Drops the stored routine if it exists.
         """
         if self._rdbms_old_metadata:
-            PgSqlMetadataDataLayer.drop_stored_routine(self._rdbms_old_metadata['routine_type'],
-                                                       self._routine_name,
-                                                       self._rdbms_old_metadata['routine_args'])
+            self._dl.drop_stored_routine(self._rdbms_old_metadata['routine_type'],
+                                         self._routine_name,
+                                         self._rdbms_old_metadata['routine_args'])
 
 # ----------------------------------------------------------------------------------------------------------------------

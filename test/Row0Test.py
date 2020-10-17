@@ -1,8 +1,4 @@
-"""
-PyStratum
-"""
-from pystratum_test.TestDataLayer import TestDataLayer
-from pystratum_test.StratumTestCase import StratumTestCase
+from test.StratumTestCase import StratumTestCase
 
 
 class Row0Test(StratumTestCase):
@@ -11,7 +7,7 @@ class Row0Test(StratumTestCase):
         """
         Stored routine with designation type row0 must return null.
         """
-        ret = TestDataLayer.tst_test_row0a(0)
+        ret = self._dl.tst_test_row0a(0)
         self.assertIsNone(ret)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -19,7 +15,7 @@ class Row0Test(StratumTestCase):
         """
         Stored routine with designation type row0 must return 1 row.
         """
-        ret = TestDataLayer.tst_test_row0a(1)
+        ret = self._dl.tst_test_row0a(1)
         self.assertIsInstance(ret, dict)
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -29,14 +25,14 @@ class Row0Test(StratumTestCase):
         @expectedException Exception
         """
         with self.assertRaises(Exception):
-            TestDataLayer.tst_test_row0a(2)
+            self._dl.tst_test_row0a(2)
 
     # ------------------------------------------------------------------------------------------------------------------
     def test4(self):
         """
         Test column tst_c00 is selected correctly.
         """
-        ret = TestDataLayer.tst_test_row0a(1)
+        ret = self._dl.tst_test_row0a(1)
         self.assertEqual(1, ret['tst_c00'])
 
 # ----------------------------------------------------------------------------------------------------------------------

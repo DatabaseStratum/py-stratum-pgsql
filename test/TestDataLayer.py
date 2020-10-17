@@ -1,65 +1,60 @@
-from pystratum_pgsql.StaticDataLayer import StaticDataLayer
+from typing import Any, Dict, List, Optional, Union
+
+from pystratum_pgsql.PgSqlDataLayer import PgSqlDataLayer
 
 
-# ----------------------------------------------------------------------------------------------------------------------
-class TestDataLayer(StaticDataLayer):
+class TestDataLayer(PgSqlDataLayer):
     """
     The stored routines wrappers.
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_constant01():
+    def tst_constant01(self) -> Any:
         """
         Test for constant.
 
         :rtype: dict[str,*]
         """
-        return StaticDataLayer.execute_sp_row1("select tst_constant01()")
+        return self.execute_sp_row1("select tst_constant01()")
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_magic_constant01():
+    def tst_magic_constant01(self) -> Any:
         """
         Test for magic constant.
 
         :rtype: *
         """
-        return StaticDataLayer.execute_sp_singleton1("select tst_magic_constant01()")
+        return self.execute_sp_singleton1("select tst_magic_constant01()")
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_magic_constant02():
+    def tst_magic_constant02(self) -> Any:
         """
         Test for magic constant.
 
         :rtype: *
         """
-        return StaticDataLayer.execute_sp_singleton1("select tst_magic_constant02()")
+        return self.execute_sp_singleton1("select tst_magic_constant02()")
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_magic_constant03():
+    def tst_magic_constant03(self) -> Any:
         """
         Test for magic constant.
 
         :rtype: *
         """
-        return StaticDataLayer.execute_sp_singleton1("select tst_magic_constant03()")
+        return self.execute_sp_singleton1("select tst_magic_constant03()")
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_magic_constant04():
+    def tst_magic_constant04(self) -> Any:
         """
         Test for magic constant.
 
         :rtype: *
         """
-        return StaticDataLayer.execute_sp_singleton1("select tst_magic_constant04()")
+        return self.execute_sp_singleton1("select tst_magic_constant04()")
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_parameter_types01(p_tst_bigint, p_tst_int, p_tst_smallint, p_tst_bit, p_tst_money, p_tst_numeric, p_tst_float, p_tst_real, p_tst_date, p_tst_timestamp, p_tst_time6, p_tst_char, p_tst_varchar):
+    def tst_parameter_types01(self, p_tst_bigint: Optional[int], p_tst_int: Optional[int], p_tst_smallint: Optional[int], p_tst_bit: Optional[int], p_tst_money: Optional[float], p_tst_numeric: Union[float, int, None], p_tst_float: Union[float, int, None], p_tst_real: Optional[float], p_tst_date: Optional[str], p_tst_timestamp: Optional[str], p_tst_time6: Optional[str], p_tst_char: Optional[str], p_tst_varchar: Optional[str]) -> int:
         """
         Test for all possible types of parameters excluding LOB's.
 
@@ -92,11 +87,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: int
         """
-        return StaticDataLayer.execute_sp_none("select tst_parameter_types01(%s::bigint, %s::int, %s::smallint, %s::bit(4), %s::money, %s::numeric, %s::numeric, %s::real, %s::date, %s::timestamp, %s::timestamp, %s::char, %s::varchar)", p_tst_bigint, p_tst_int, p_tst_smallint, p_tst_bit, p_tst_money, p_tst_numeric, p_tst_float, p_tst_real, p_tst_date, p_tst_timestamp, p_tst_time6, p_tst_char, p_tst_varchar)
+        return self.execute_sp_none("select tst_parameter_types01(%s::bigint, %s::int, %s::smallint, %s::bit(4), %s::money, %s::numeric, %s::numeric, %s::real, %s::date, %s::timestamp, %s::timestamp, %s::char, %s::varchar)", p_tst_bigint, p_tst_int, p_tst_smallint, p_tst_bit, p_tst_money, p_tst_numeric, p_tst_float, p_tst_real, p_tst_date, p_tst_timestamp, p_tst_time6, p_tst_char, p_tst_varchar)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_parameter_types02(p_tst_bigint, p_tst_int, p_tst_smallint, p_tst_bit, p_tst_money, p_tst_numeric, p_tst_float, p_tst_real, p_tst_date, p_tst_timestamp, p_tst_time6, p_tst_char, p_tst_varchar, p_tst_text, p_tst_bytea):
+    def tst_parameter_types02(self, p_tst_bigint: Optional[int], p_tst_int: Optional[int], p_tst_smallint: Optional[int], p_tst_bit: Optional[int], p_tst_money: Optional[float], p_tst_numeric: Union[float, int, None], p_tst_float: Union[float, int, None], p_tst_real: Optional[float], p_tst_date: Optional[str], p_tst_timestamp: Optional[str], p_tst_time6: Optional[str], p_tst_char: Optional[str], p_tst_varchar: Optional[str], p_tst_text: Optional[str], p_tst_bytea: Optional[bytes]) -> int:
         """
         Test for all possible types of parameters excluding LOB's.
 
@@ -133,11 +127,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: int
         """
-        return StaticDataLayer.execute_sp_none("select tst_parameter_types02(%s::bigint, %s::int, %s::smallint, %s::bit(4), %s::money, %s::numeric, %s::numeric, %s::real, %s::date, %s::timestamp, %s::timestamp, %s::char, %s::varchar, %s::text, %s::bytea)", p_tst_bigint, p_tst_int, p_tst_smallint, p_tst_bit, p_tst_money, p_tst_numeric, p_tst_float, p_tst_real, p_tst_date, p_tst_timestamp, p_tst_time6, p_tst_char, p_tst_varchar, p_tst_text, p_tst_bytea)
+        return self.execute_sp_none("select tst_parameter_types02(%s::bigint, %s::int, %s::smallint, %s::bit(4), %s::money, %s::numeric, %s::numeric, %s::real, %s::date, %s::timestamp, %s::timestamp, %s::char, %s::varchar, %s::text, %s::bytea)", p_tst_bigint, p_tst_int, p_tst_smallint, p_tst_bit, p_tst_money, p_tst_numeric, p_tst_float, p_tst_real, p_tst_date, p_tst_timestamp, p_tst_time6, p_tst_char, p_tst_varchar, p_tst_text, p_tst_bytea)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_big_int(p_bigint):
+    def tst_test_argument_big_int(self, p_bigint: Optional[int]) -> Any:
         """
         Test for argument type bigint.
 
@@ -146,11 +139,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_big_int(%s::bigint)", p_bigint)
+        return self.execute_singleton1("select tst_test_argument_big_int(%s::bigint)", p_bigint)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_bit(p_bit):
+    def tst_test_argument_bit(self, p_bit: Optional[int]) -> Any:
         """
         Test for argument type bit.
 
@@ -159,11 +151,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_bit(%s::bit(4))", p_bit)
+        return self.execute_singleton1("select tst_test_argument_bit(%s::bit(4))", p_bit)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_bool(p_bool):
+    def tst_test_argument_bool(self, p_bool: Optional[bool]) -> Any:
         """
         Test for argument type boolean.
 
@@ -172,11 +163,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_bool(%s::bool)", p_bool)
+        return self.execute_singleton1("select tst_test_argument_bool(%s::bool)", p_bool)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_bytea(p_bytea):
+    def tst_test_argument_bytea(self, p_bytea: Optional[bytes]) -> Any:
         """
         Test for argument type bytea.
 
@@ -185,11 +175,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_bytea(%s::bytea)", p_bytea)
+        return self.execute_singleton1("select tst_test_argument_bytea(%s::bytea)", p_bytea)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_char(p_char):
+    def tst_test_argument_char(self, p_char: Optional[str]) -> Any:
         """
         Test for argument type char.
 
@@ -198,11 +187,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_char(%s::char)", p_char)
+        return self.execute_singleton1("select tst_test_argument_char(%s::char)", p_char)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_date(p_date):
+    def tst_test_argument_date(self, p_date: Optional[str]) -> Any:
         """
         Test for argument type date.
 
@@ -211,11 +199,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_date(%s::date)", p_date)
+        return self.execute_singleton1("select tst_test_argument_date(%s::date)", p_date)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_int(p_int):
+    def tst_test_argument_int(self, p_int: Optional[int]) -> Any:
         """
         Test for argument type int.
 
@@ -224,11 +211,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_int(%s::int)", p_int)
+        return self.execute_singleton1("select tst_test_argument_int(%s::int)", p_int)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_money(p_money):
+    def tst_test_argument_money(self, p_money: Optional[float]) -> Any:
         """
         Test for argument type money.
 
@@ -237,11 +223,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_money(%s::money)", p_money)
+        return self.execute_singleton1("select tst_test_argument_money(%s::money)", p_money)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_numeric(p_num):
+    def tst_test_argument_numeric(self, p_num: Union[float, int, None]) -> Any:
         """
         Test for argument type numeric.
 
@@ -250,11 +235,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_numeric(%s::numeric)", p_num)
+        return self.execute_singleton1("select tst_test_argument_numeric(%s::numeric)", p_num)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_real(p_real):
+    def tst_test_argument_real(self, p_real: Optional[float]) -> Any:
         """
         Test for argument type real.
 
@@ -263,11 +247,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_real(%s::real)", p_real)
+        return self.execute_singleton1("select tst_test_argument_real(%s::real)", p_real)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_small_int(p_smallint):
+    def tst_test_argument_small_int(self, p_smallint: Optional[int]) -> Any:
         """
         Test for argument type small int.
 
@@ -276,11 +259,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_small_int(%s::smallint)", p_smallint)
+        return self.execute_singleton1("select tst_test_argument_small_int(%s::smallint)", p_smallint)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_text(p_txt):
+    def tst_test_argument_text(self, p_txt: Optional[str]) -> Any:
         """
         Test for argument type text.
 
@@ -289,11 +271,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_text(%s::text)", p_txt)
+        return self.execute_singleton1("select tst_test_argument_text(%s::text)", p_txt)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_timestamp(p_ts):
+    def tst_test_argument_timestamp(self, p_ts: Optional[str]) -> Any:
         """
         Test for argument type timestamp.
 
@@ -302,11 +283,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_timestamp(%s::timestamp)", p_ts)
+        return self.execute_singleton1("select tst_test_argument_timestamp(%s::timestamp)", p_ts)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_argument_varchar(p_varchar):
+    def tst_test_argument_varchar(self, p_varchar: Optional[str]) -> Any:
         """
         Test for argument type varchar.
 
@@ -315,11 +295,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_argument_varchar(%s::varchar)", p_varchar)
+        return self.execute_singleton1("select tst_test_argument_varchar(%s::varchar)", p_varchar)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_function(p_a, p_b):
+    def tst_test_function(self, p_a: Optional[int], p_b: Optional[int]) -> Any:
         """
         Test for stored function wrapper.
 
@@ -330,21 +309,19 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_singleton1("select tst_test_function(%s::int, %s::int)", p_a, p_b)
+        return self.execute_singleton1("select tst_test_function(%s::int, %s::int)", p_a, p_b)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_log():
+    def tst_test_log(self) -> int:
         """
         Test for designation type log.
 
         :rtype: int
         """
-        return StaticDataLayer.execute_sp_log("select tst_test_log()")
+        return self.execute_sp_log("select tst_test_log()")
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_none(p_count):
+    def tst_test_none(self, p_count: Optional[int]) -> int:
         """
         Test for designation type none.
 
@@ -353,11 +330,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: int
         """
-        return StaticDataLayer.execute_sp_none("select tst_test_none(%s::bigint)", p_count)
+        return self.execute_sp_none("select tst_test_none(%s::bigint)", p_count)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_none_with_lob(p_count, p_blob):
+    def tst_test_none_with_lob(self, p_count: Optional[int], p_blob: Optional[bytes]) -> int:
         """
         Test for designation type none with BLOB.
 
@@ -368,21 +344,19 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: int
         """
-        return StaticDataLayer.execute_sp_none("select tst_test_none_with_lob(%s::bigint, %s::bytea)", p_count, p_blob)
+        return self.execute_sp_none("select tst_test_none_with_lob(%s::bigint, %s::bytea)", p_count, p_blob)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_percent_symbol():
+    def tst_test_percent_symbol(self) -> List[Dict[str, Any]]:
         """
         Test for stored function with percent symbols.
 
         :rtype: list[dict[str,*]]
         """
-        return StaticDataLayer.execute_sp_rows("select tst_test_percent_symbol()")
+        return self.execute_sp_rows("select tst_test_percent_symbol()")
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_row0a(p_count):
+    def tst_test_row0a(self, p_count: Optional[int]) -> Any:
         """
         Test for designation type row0.
 
@@ -394,11 +368,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: None|dict[str,*]
         """
-        return StaticDataLayer.execute_sp_row0("select tst_test_row0a(%s::int)", p_count)
+        return self.execute_sp_row0("select tst_test_row0a(%s::int)", p_count)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_row0a_with_lob(p_count, p_blob):
+    def tst_test_row0a_with_lob(self, p_count: Optional[int], p_blob: Optional[bytes]) -> Any:
         """
         Test for designation type row0 with BLOB.
 
@@ -412,11 +385,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: None|dict[str,*]
         """
-        return StaticDataLayer.execute_sp_row0("select tst_test_row0a_with_lob(%s::int, %s::bytea)", p_count, p_blob)
+        return self.execute_sp_row0("select tst_test_row0a_with_lob(%s::int, %s::bytea)", p_count, p_blob)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_row1a(p_count):
+    def tst_test_row1a(self, p_count: Optional[int]) -> Any:
         """
         Test for designation type row1.
 
@@ -428,11 +400,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: dict[str,*]
         """
-        return StaticDataLayer.execute_sp_row1("select tst_test_row1a(%s::int)", p_count)
+        return self.execute_sp_row1("select tst_test_row1a(%s::int)", p_count)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_row1a_with_lob(p_count, p_blob):
+    def tst_test_row1a_with_lob(self, p_count: Optional[int], p_blob: Optional[bytes]) -> Any:
         """
         Test for designation type row1 with BLOB.
 
@@ -446,11 +417,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: dict[str,*]
         """
-        return StaticDataLayer.execute_sp_row1("select tst_test_row1a_with_lob(%s::int, %s::bytea)", p_count, p_blob)
+        return self.execute_sp_row1("select tst_test_row1a_with_lob(%s::int, %s::bytea)", p_count, p_blob)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_rows1(p_count):
+    def tst_test_rows1(self, p_count: Optional[int]) -> List[Dict[str, Any]]:
         """
         Test for designation type row1.
 
@@ -462,11 +432,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: list[dict[str,*]]
         """
-        return StaticDataLayer.execute_sp_rows("select tst_test_rows1(%s::int)", p_count)
+        return self.execute_sp_rows("select tst_test_rows1(%s::int)", p_count)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_rows1_with_lob(p_count, p_blob):
+    def tst_test_rows1_with_lob(self, p_count: Optional[int], p_blob: Optional[bytes]) -> List[Dict[str, Any]]:
         """
         Test for designation type rows.
 
@@ -477,11 +446,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: list[dict[str,*]]
         """
-        return StaticDataLayer.execute_sp_rows("select tst_test_rows1_with_lob(%s::int, %s::bytea)", p_count, p_blob)
+        return self.execute_sp_rows("select tst_test_rows1_with_lob(%s::int, %s::bytea)", p_count, p_blob)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_rows_with_index1(p_count):
+    def tst_test_rows_with_index1(self, p_count: Optional[int]) -> Dict:
         """
         Test for designation type rows_with_index.
 
@@ -491,7 +459,7 @@ class TestDataLayer(StaticDataLayer):
         :rtype: dict
         """
         ret = {}
-        rows = StaticDataLayer.execute_sp_rows("select tst_test_rows_with_index1(%s::int)", p_count)
+        rows = self.execute_sp_rows("select tst_test_rows_with_index1(%s::int)", p_count)
         for row in rows:
             if row['tst_c01'] in ret:
                 if row['tst_c02'] in ret[row['tst_c01']]:
@@ -504,8 +472,7 @@ class TestDataLayer(StaticDataLayer):
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_rows_with_index1_with_lob(p_count, p_blob):
+    def tst_test_rows_with_index1_with_lob(self, p_count: Optional[int], p_blob: Optional[bytes]) -> Dict:
         """
         Test for designation type rows_with_index with BLOB..
 
@@ -517,7 +484,7 @@ class TestDataLayer(StaticDataLayer):
         :rtype: dict
         """
         ret = {}
-        rows = StaticDataLayer.execute_sp_rows("select tst_test_rows_with_index1_with_lob(%s::int, %s::bytea)", p_count, p_blob)
+        rows = self.execute_sp_rows("select tst_test_rows_with_index1_with_lob(%s::int, %s::bytea)", p_count, p_blob)
         for row in rows:
             if row['tst_c01'] in ret:
                 if row['tst_c02'] in ret[row['tst_c01']]:
@@ -530,8 +497,7 @@ class TestDataLayer(StaticDataLayer):
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_rows_with_key1(p_count):
+    def tst_test_rows_with_key1(self, p_count: Optional[int]) -> Dict:
         """
         Test for designation type rows_with_key.
 
@@ -541,7 +507,7 @@ class TestDataLayer(StaticDataLayer):
         :rtype: dict
         """
         ret = {}
-        rows = StaticDataLayer.execute_sp_rows("select tst_test_rows_with_key1(%s::int)", p_count)
+        rows = self.execute_sp_rows("select tst_test_rows_with_key1(%s::int)", p_count)
         for row in rows:
             if row['tst_c01'] in ret:
                 if row['tst_c02'] in ret[row['tst_c01']]:
@@ -557,8 +523,7 @@ class TestDataLayer(StaticDataLayer):
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_rows_with_key1_with_lob(p_count, p_blob):
+    def tst_test_rows_with_key1_with_lob(self, p_count: Optional[int], p_blob: Optional[bytes]) -> Dict:
         """
         Test for designation type rows_with_key with BLOB.
 
@@ -570,7 +535,7 @@ class TestDataLayer(StaticDataLayer):
         :rtype: dict
         """
         ret = {}
-        rows = StaticDataLayer.execute_sp_rows("select tst_test_rows_with_key1_with_lob(%s::int, %s::bytea)", p_count, p_blob)
+        rows = self.execute_sp_rows("select tst_test_rows_with_key1_with_lob(%s::int, %s::bytea)", p_count, p_blob)
         for row in rows:
             if row['tst_c01'] in ret:
                 if row['tst_c02'] in ret[row['tst_c01']]:
@@ -586,8 +551,7 @@ class TestDataLayer(StaticDataLayer):
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_singleton0a(p_count):
+    def tst_test_singleton0a(self, p_count: Optional[int]) -> Any:
         """
         Test for designation type singleton0.
 
@@ -599,11 +563,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_sp_singleton0("select tst_test_singleton0a(%s::int)", p_count)
+        return self.execute_sp_singleton0("select tst_test_singleton0a(%s::int)", p_count)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_singleton0a_with_lob(p_count, p_blob):
+    def tst_test_singleton0a_with_lob(self, p_count: Optional[int], p_blob: Optional[bytes]) -> Any:
         """
         Test for designation type singleton0 with BLOB..
 
@@ -617,11 +580,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_sp_singleton0("select tst_test_singleton0a_with_lob(%s::int, %s::bytea)", p_count, p_blob)
+        return self.execute_sp_singleton0("select tst_test_singleton0a_with_lob(%s::int, %s::bytea)", p_count, p_blob)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_singleton1a(p_count):
+    def tst_test_singleton1a(self, p_count: Optional[int]) -> Any:
         """
         Test for designation type singleton1.
 
@@ -633,11 +595,10 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_sp_singleton1("select tst_test_singleton1a(%s::int)", p_count)
+        return self.execute_sp_singleton1("select tst_test_singleton1a(%s::int)", p_count)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def tst_test_singleton1a_with_lob(p_count, p_blob):
+    def tst_test_singleton1a_with_lob(self, p_count: Optional[int], p_blob: Optional[bytes]) -> Any:
         """
         Test for designation type singleton1 with BLOB.
 
@@ -651,7 +612,7 @@ class TestDataLayer(StaticDataLayer):
 
         :rtype: *
         """
-        return StaticDataLayer.execute_sp_singleton1("select tst_test_singleton1a_with_lob(%s::int, %s::bytea)", p_count, p_blob)
+        return self.execute_sp_singleton1("select tst_test_singleton1a_with_lob(%s::int, %s::bytea)", p_count, p_blob)
 
 
 # ----------------------------------------------------------------------------------------------------------------------

@@ -1,52 +1,53 @@
-"""
-PyStratum
-"""
-from typing import List, Dict, Union, Iterable
+from typing import Any, Dict, Iterable, List, Union
 
-import psycopg2
 from psycopg2.extras import RealDictCursor
+from pystratum_middle.exception.ResultException import ResultException
 
-from pystratum.exception.ResultException import ResultException
+from pystratum_pgsql.PgSqlConnector import PgSqlConnector
 
 
-class StaticDataLayer:
+class PgSqlDataLayer:
     """
     Class for connecting to a PostgreSQL instance and executing SQL statements. Also, a parent class for classes with
     static wrapper methods for executing stored procedures and functions.
     """
     # ------------------------------------------------------------------------------------------------------------------
-    connection = None
-    """
-    The connection between Python and the PostgreSQL instance.
-
-    :type: psycopg2.extensions.connection
-    """
-
     line_buffered: bool = True
     """
     If True log messages from stored procedures with designation type 'log' are line buffered (Note: In python
     sys.stdout is buffered by default).
-
-    :type: bool
     """
 
     sp_log_init: str = 'stratum_log_init'
     """
     The name of the stored routine that must be run before a store routine with designation type "log".
-
-    :type: str
     """
 
     sp_log_fetch: str = 'stratum_log_fetch'
     """
     The name of the stored routine that must be run after a store routine with designation type "log".
-
-    :type: str
     """
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def _get_column_names(cursor) -> List:
+    def __init__(self, connector: PgSqlConnector):
+        """
+        Object constructor.
+        """
+
+        self.__connector: PgSqlConnector = connector
+        """
+        The object for connecting to a PostgreSQL instance.
+        """
+
+        self._connection: Any = None
+        """
+        The connection between Python and the PostgreSQL instance.
+    
+        :type: psycopg2.extensions.connection
+        """
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def _get_column_names(self, cursor) -> List:
         """
         Returns a list with column names retrieved from the description of a cursor.
 
@@ -61,64 +62,45 @@ class StaticDataLayer:
         return column_names
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def start_transaction(isolation_level: str = 'READ-COMMITTED', readonly: bool = False) -> None:
+    def start_transaction(self, isolation_level: str = 'READ-COMMITTED', readonly: bool = False) -> None:
         """
         Starts a transaction.
 
         :param str isolation_level: The isolation level.
         :param bool readonly:
         """
-        StaticDataLayer.connection.set_session(isolation_level, readonly)
+        self._connection.set_session(isolation_level, readonly)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def commit():
+    def commit(self):
         """
         Commits the current transaction.
         """
-        StaticDataLayer.connection.commit()
+        self._connection.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def rollback() -> None:
+    def rollback(self) -> None:
         """
         Rolls back the current transaction.
         """
-        StaticDataLayer.connection.rollback()
+        self._connection.rollback()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def connect(host: str, database: str, schema: str, user: str, password: str, port: int = 5432) -> None:
+    def connect(self) -> None:
         """
         Connects to a PostgreSQL instance.
-
-        :param str host: The hostname on which the PostgreSQL server is running.
-        :param str database:
-        :param str schema:
-        :param str user:
-        :param str password:
-        :param int port:
         """
-        StaticDataLayer.connection = psycopg2.connect(database=database,
-                                                      user=user,
-                                                      password=password,
-                                                      host=host,
-                                                      port=port)
-        cursor = StaticDataLayer.connection.cursor()
-        cursor.execute('set search_path to %s', (schema,))
+        self._connection = self.__connector.connect()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def disconnect() -> None:
+    def disconnect(self) -> None:
         """
         Disconnects from the PostgreSQL instance.
         """
-        StaticDataLayer.connection.close()
+        self.__connector.disconnect()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_none(sql: str, *params) -> int:
+    def execute_none(self, sql: str, *params) -> int:
         """
         Executes a query that does not select any rows.
 
@@ -127,7 +109,7 @@ class StaticDataLayer:
 
         :rtype: int
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         if params:
             cursor.execute(sql, params)
         else:
@@ -138,8 +120,7 @@ class StaticDataLayer:
         return row_count
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_rows(sql: str, *params) -> List:
+    def execute_rows(self, sql: str, *params) -> List:
         """
         Executes a query that selects 0 or more rows. Returns the selected rows (an empty list if no rows are selected).
 
@@ -148,7 +129,7 @@ class StaticDataLayer:
 
         :rtype: list[dict]
         """
-        cursor = StaticDataLayer.connection.cursor(cursor_factory=RealDictCursor)
+        cursor = self._connection.cursor(cursor_factory=RealDictCursor)
         if params:
             cursor.execute(sql, params)
         else:
@@ -159,8 +140,7 @@ class StaticDataLayer:
         return rows
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_sp_none(sql: str, *params) -> None:
+    def execute_sp_none(self, sql: str, *params) -> None:
         """
         Executes a stored procedure that does not select any rows.
 
@@ -170,7 +150,7 @@ class StaticDataLayer:
         :param str sql: The SQL statement.
         :param iterable params: The arguments for the statement.
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         if params:
             cursor.execute(sql, params)
         else:
@@ -178,8 +158,7 @@ class StaticDataLayer:
         cursor.close()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_sp_row0(sql: str, *params) -> Union[None, Dict]:
+    def execute_sp_row0(self, sql: str, *params) -> Union[None, Dict]:
         """
         Executes a stored procedure that selects 0 or 1 row. Returns the selected row or None.
 
@@ -188,17 +167,17 @@ class StaticDataLayer:
 
         :rtype: None|dict[str,object]
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
 
         if params:
             cursor.execute(sql, params)
         else:
             cursor.execute(sql)
-        portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
+        portal = self._connection.cursor(cursor.fetchone()[0])
         rows = portal.fetchall()
         row_count = len(rows)
         if row_count == 1:
-            column_names = StaticDataLayer._get_column_names(portal)
+            column_names = self._get_column_names(portal)
             ret = dict(zip(column_names, rows[0]))
         else:
             ret = None
@@ -211,8 +190,7 @@ class StaticDataLayer:
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_sp_row1(sql: str, *params) -> Dict:
+    def execute_sp_row1(self, sql: str, *params) -> Dict:
         """
         Executes a stored procedure that selects 1 row. Returns the selected row.
 
@@ -221,17 +199,17 @@ class StaticDataLayer:
 
         :rtype: dict[str,object]
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         if params:
             cursor.execute(sql, params)
         else:
             cursor.execute(sql)
-        portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
+        portal = self._connection.cursor(cursor.fetchone()[0])
         rows = portal.fetchall()
-        StaticDataLayer._get_column_names(portal)
+        self._get_column_names(portal)
         row_count = len(rows)
         if row_count == 1:
-            column_names = StaticDataLayer._get_column_names(portal)
+            column_names = self._get_column_names(portal)
             ret = dict(zip(column_names, rows[0]))
         else:
             ret = None  # Keep our IDE happy.
@@ -244,8 +222,7 @@ class StaticDataLayer:
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_sp_rows(sql: str, *params) -> List:
+    def execute_sp_rows(self, sql: str, *params) -> List:
         """
         Executes a stored procedure that selects 0 or more rows. Returns the selected rows (an empty list if no rows
         are selected).
@@ -255,14 +232,14 @@ class StaticDataLayer:
 
         :rtype: list[dict[str,object]]
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         if params:
             cursor.execute(sql, params)
         else:
             cursor.execute(sql)
-        portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
+        portal = self._connection.cursor(cursor.fetchone()[0])
         tmp = portal.fetchall()
-        column_names = StaticDataLayer._get_column_names(portal)
+        column_names = self._get_column_names(portal)
         portal.close()
         cursor.close()
 
@@ -273,8 +250,7 @@ class StaticDataLayer:
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_sp_singleton0(sql: str, *params) -> object:
+    def execute_sp_singleton0(self, sql: str, *params) -> object:
         """
         Executes a stored procedure that selects 0 or 1 row with 1 column. Returns the value of selected column or None.
 
@@ -283,12 +259,12 @@ class StaticDataLayer:
 
         :rtype: object
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         if params:
             cursor.execute(sql, params)
         else:
             cursor.execute(sql)
-        portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
+        portal = self._connection.cursor(cursor.fetchone()[0])
         rows = portal.fetchall()
         row_count = len(rows)
         if row_count == 1:
@@ -304,8 +280,7 @@ class StaticDataLayer:
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_singleton1(sql: str, *params) -> object:
+    def execute_singleton1(self, sql: str, *params) -> object:
         """
         Executes query that selects 1 row with 1 column. Returns the value of the selected column.
 
@@ -314,7 +289,7 @@ class StaticDataLayer:
 
         :rtype: object
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         if params:
             cursor.execute(sql, params)
         else:
@@ -332,8 +307,7 @@ class StaticDataLayer:
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_sp_singleton1(sql: str, *params) -> object:
+    def execute_sp_singleton1(self, sql: str, *params) -> object:
         """
         Executes a stored procedure that selects 1 row with 1 column. Returns the value of the selected column.
 
@@ -342,12 +316,12 @@ class StaticDataLayer:
 
         :rtype: object
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         if params:
             cursor.execute(sql, params)
         else:
             cursor.execute(sql)
-        portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
+        portal = self._connection.cursor(cursor.fetchone()[0])
         rows = portal.fetchall()
         row_count = len(rows)
         if row_count == 1:
@@ -363,8 +337,7 @@ class StaticDataLayer:
         return ret
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_sp_table(sql: str, *params) -> int:
+    def execute_sp_table(self, sql: str, *params) -> int:
         """
         Executes a stored routine with designation type "table". Returns the number of rows.
 
@@ -377,8 +350,7 @@ class StaticDataLayer:
         raise NotImplementedError()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_sp_log(sql: str, *params) -> int:
+    def execute_sp_log(self, sql: str, *params) -> int:
         """
         Executes a stored procedure with log statements. Returns the number of lines in the log.
 
@@ -387,10 +359,10 @@ class StaticDataLayer:
 
         :rtype: int
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
 
         # Create temporary table for logging.
-        cursor.callproc(StaticDataLayer.sp_log_init)
+        cursor.callproc(self.sp_log_init)
 
         # Execute the stored procedure.
         if params:
@@ -399,21 +371,21 @@ class StaticDataLayer:
             cursor.execute(sql)
 
         # Fetch the log messages.
-        cursor.callproc(StaticDataLayer.sp_log_fetch)
-        portal = StaticDataLayer.connection.cursor(cursor.fetchone()[0])
+        cursor.callproc(self.sp_log_fetch)
+        portal = self._connection.cursor(cursor.fetchone()[0])
         messages = portal.fetchall()
         portal.close()
         cursor.close()
 
         # Log the log messages.
         for message in messages:
-            print('{0!s} {1!s}'.format(*message), flush=StaticDataLayer.line_buffered)
+            print('{0!s} {1!s}'.format(*message), flush=self.line_buffered)
 
         return len(messages)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def copy_from(file: object,
+    def copy_from(self,
+                  file: object,
                   table: str,
                   sep: str = '\t',
                   null: str = '\\N',
@@ -434,7 +406,7 @@ class StaticDataLayer:
 
         :rtype: int
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         cursor.copy_from(file, table, sep, null, size, columns)
         row_count = cursor.rowcount
         cursor.close()
@@ -442,8 +414,8 @@ class StaticDataLayer:
         return row_count
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def copy_to(file: object,
+    def copy_to(self,
+                file: object,
                 table: str,
                 sep: str = '\t',
                 null: str = '\\N',
@@ -459,7 +431,7 @@ class StaticDataLayer:
 
         :rtype: int
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         cursor.copy_to(file, table, sep, null, columns)
         row_count = cursor.rowcount
         cursor.close()
@@ -467,8 +439,7 @@ class StaticDataLayer:
         return row_count
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def copy_expert(sql: str, file: object, size: int = 8192) -> int:
+    def copy_expert(self, sql: str, file: object, size: int = 8192) -> int:
         """
         Submit a user-composed COPY statement. Returns the number of rows copied.
 
@@ -478,7 +449,7 @@ class StaticDataLayer:
 
         :rtype: int
         """
-        cursor = StaticDataLayer.connection.cursor()
+        cursor = self._connection.cursor()
         cursor.copy_expert(sql, file, size)
         row_count = cursor.rowcount
         cursor.close()

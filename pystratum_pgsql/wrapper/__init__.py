@@ -3,8 +3,6 @@ PyStratum
 """
 from typing import Dict
 
-from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
-
 from pystratum_pgsql.wrapper.PgSqlFunctionsWrapper import PgSqlFunctionsWrapper
 from pystratum_pgsql.wrapper.PgSqlLogWrapper import PgSqlLogWrapper
 from pystratum_pgsql.wrapper.PgSqlNoneWrapper import PgSqlNoneWrapper
@@ -16,6 +14,7 @@ from pystratum_pgsql.wrapper.PgSqlRowsWrapper import PgSqlRowsWrapper
 from pystratum_pgsql.wrapper.PgSqlSingleton0Wrapper import PgSqlSingleton0Wrapper
 from pystratum_pgsql.wrapper.PgSqlSingleton1Wrapper import PgSqlSingleton1Wrapper
 from pystratum_pgsql.wrapper.PgSqlTableWrapper import PgSqlTableWrapper
+from pystratum_pgsql.wrapper.PgSqlWrapper import PgSqlWrapper
 
 
 def create_routine_wrapper(routine: Dict, lob_as_string_flag: bool) -> PgSqlWrapper:

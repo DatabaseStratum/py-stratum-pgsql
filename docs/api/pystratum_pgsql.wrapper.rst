@@ -100,7 +100,6 @@ pystratum\_pgsql.wrapper.PgSqlWrapper module
    :undoc-members:
    :show-inheritance:
 
-
 Module contents
 ---------------
 

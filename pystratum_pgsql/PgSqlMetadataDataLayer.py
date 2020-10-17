@@ -1,26 +1,33 @@
-"""
-PyStratum
-"""
-from typing import Union, List
+from typing import List, Union
 
-from pystratum.MetadataDataLayer import MetadataDataLayer
-from pystratum_pgsql.StaticDataLayer import StaticDataLayer
+from pystratum_backend.StratumStyle import StratumStyle
+from pystratum_common.MetadataDataLayer import MetadataDataLayer
+
+from pystratum_pgsql.PgSqlConnector import PgSqlConnector
+from pystratum_pgsql.PgSqlDataLayer import PgSqlDataLayer
 
 
 class PgSqlMetadataDataLayer(MetadataDataLayer):
     """
     Data layer for retrieving metadata and loading stored routines.
     """
-    __dl = None
-    """
-    The connection to the PostgreSQL instance.
-
-    :type: pystratum_pgsql.StaticDataLayer.StaticDataLayer|None
-    """
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def call_stored_routine(routine_name: str) -> Union[int, None]:
+    def __init__(self, io: StratumStyle, connector: PgSqlConnector):
+        """
+        Object constructor.
+
+        :param PyStratumStyle io: The output decorator.
+        """
+        super().__init__(io)
+
+        self.__dl: PgSqlDataLayer = PgSqlDataLayer(connector)
+        """
+        The connection to a PostgreSQL instance.
+        """
+
+    # ------------------------------------------------------------------------------------------------------------------
+    def call_stored_routine(self, routine_name: str) -> Union[int, None]:
         """
         Class a stored procedure without arguments.
 
@@ -30,11 +37,10 @@ class PgSqlMetadataDataLayer(MetadataDataLayer):
         """
         sql = 'call {0}()'.format(routine_name)
 
-        return PgSqlMetadataDataLayer.execute_none(sql)
+        return self.execute_none(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def check_table_exists(table_name: str) -> Union[int, None]:
+    def check_table_exists(self, table_name: str) -> Union[int, None]:
         """
         Checks if a table exists in the current schema.
 
@@ -48,35 +54,24 @@ information_schema.tables
 where TABLE_SCHEMA = database()
 and   TABLE_NAME   = '{0}'""" % table_name
 
-        return PgSqlMetadataDataLayer.execute_none(sql)
+        return self.execute_none(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def commit() -> None:
+    def commit(self) -> None:
         """
         Commits the current transaction.
         """
-        PgSqlMetadataDataLayer.__dl.commit()
+        self.__dl.commit()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def connect(host: str, database: str, schema: str, user: str, password: str, port: int = 5432) -> None:
+    def connect(self) -> None:
         """
         Connects to a PostgreSQL instance.
-
-        :param str host: The hostname on which the PostgreSQL server is running.
-        :param str database:
-        :param str schema:
-        :param str user:
-        :param str password:
-        :param int port:
         """
-        PgSqlMetadataDataLayer.__dl = StaticDataLayer()
-        PgSqlMetadataDataLayer.__dl.connect(host, database, schema, user, password, port)
+        self.__dl.connect()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def describe_table(table_name: str) -> List:
+    def describe_table(self, table_name: str) -> List:
         """
         Describes a table.
 
@@ -86,19 +81,17 @@ and   TABLE_NAME   = '{0}'""" % table_name
         """
         sql = 'describe `{0}`'.format(table_name)
 
-        return PgSqlMetadataDataLayer.execute_rows(sql)
+        return self.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def disconnect() -> None:
+    def disconnect(self) -> None:
         """
         Disconnects from the PostgreSQL instance.
         """
-        PgSqlMetadataDataLayer.__dl.disconnect()
+        self.__dl.disconnect()
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def drop_stored_routine(routine_type: str, routine_name: str, routine_args: str) -> None:
+    def drop_stored_routine(self, routine_type: str, routine_name: str, routine_args: str) -> None:
         """
         Drops a stored routine if it exists.
 
@@ -108,11 +101,10 @@ and   TABLE_NAME   = '{0}'""" % table_name
         """
         sql = 'drop {0} if exists {1}({2})'.format(routine_type, routine_name, routine_args)
 
-        PgSqlMetadataDataLayer.execute_none(sql)
+        self.execute_none(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def drop_temporary_table(table_name: str) -> None:
+    def drop_temporary_table(self, table_name: str) -> None:
         """
         Drops a temporary table.
 
@@ -120,11 +112,10 @@ and   TABLE_NAME   = '{0}'""" % table_name
         """
         sql = 'drop temporary table `{0}`'.format(table_name)
 
-        PgSqlMetadataDataLayer.execute_none(sql)
+        self.execute_none(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_none(query: str) -> int:
+    def execute_none(self, query: str) -> int:
         """
         Executes a query that does not select any rows.
 
@@ -132,13 +123,12 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
         :rtype: int
         """
-        PgSqlMetadataDataLayer._log_query(query)
+        self._log_query(query)
 
-        return PgSqlMetadataDataLayer.__dl.execute_none(query)
+        return self.__dl.execute_none(query)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_rows(query: str) -> List:
+    def execute_rows(self, query: str) -> List:
         """
         Executes a query that selects 0 or more rows. Returns the selected rows (an empty list if no rows are selected).
 
@@ -146,13 +136,12 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
         :rtype: list[dict[str,Object]]
         """
-        PgSqlMetadataDataLayer._log_query(query)
+        self._log_query(query)
 
-        return PgSqlMetadataDataLayer.__dl.execute_rows(query)
+        return self.__dl.execute_rows(query)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def execute_singleton1(query: str) -> object:
+    def execute_singleton1(self, query: str) -> object:
         """
         Executes SQL statement that selects 1 row with 1 column. Returns the value of the selected column.
 
@@ -160,13 +149,12 @@ and   TABLE_NAME   = '{0}'""" % table_name
 
         :rtype: Object
         """
-        PgSqlMetadataDataLayer._log_query(query)
+        self._log_query(query)
 
-        return PgSqlMetadataDataLayer.__dl.execute_singleton1(query)
+        return self.__dl.execute_singleton1(query)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def get_all_table_columns() -> List:
+    def get_all_table_columns(self) -> List:
         """
         Selects metadata of all columns of all tables.
 
@@ -208,11 +196,10 @@ union all
 )
 """
 
-        return PgSqlMetadataDataLayer.execute_rows(sql)
+        return self.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def get_label_tables(regex: str) -> List:
+    def get_label_tables(self, regex: str) -> List:
         """
         Selects metadata of tables with a label column.
 
@@ -234,11 +221,10 @@ and   t2.table_schema  = current_schema()
 and   t2.column_name ~ '{0}'
 """.format(regex)
 
-        return PgSqlMetadataDataLayer.execute_rows(sql)
+        return self.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def get_labels_from_table(table_name: str, id_column_name: str, label_column_name: str) -> List:
+    def get_labels_from_table(self, table_name: str, id_column_name: str, label_column_name: str) -> List:
         """
         Selects all labels from a table with labels.
 
@@ -256,11 +242,10 @@ where   nullif(\"{1}\",'') is not null""".format(id_column_name,
                                                  label_column_name,
                                                  table_name)
 
-        return PgSqlMetadataDataLayer.execute_rows(sql)
+        return self.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def get_routine_parameters(routine_name: str) -> List:
+    def get_routine_parameters(self, routine_name: str) -> List:
         """
         Selects metadata of the parameters of a stored routine.
 
@@ -282,11 +267,10 @@ and   t1.routine_schema  = current_schema()
 and   t1.routine_name    = '%s'
 order by t2.ordinal_position""" % routine_name
 
-        return PgSqlMetadataDataLayer.execute_rows(sql)
+        return self.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def get_routines() -> List:
+    def get_routines(self) -> List:
         """
         Selects metadata of all routines in the current schema.
 
@@ -312,14 +296,13 @@ group by t1.routine_name
 order by routine_name
 """
 
-        return PgSqlMetadataDataLayer.execute_rows(sql)
+        return self.execute_rows(sql)
 
     # ------------------------------------------------------------------------------------------------------------------
-    @staticmethod
-    def rollback() -> None:
+    def rollback(self) -> None:
         """
         Rollbacks the current transaction.
         """
-        PgSqlMetadataDataLayer.__dl.rollback()
+        self.__dl.rollback()
 
 # ----------------------------------------------------------------------------------------------------------------------

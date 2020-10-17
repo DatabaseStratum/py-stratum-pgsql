@@ -12,6 +12,13 @@ pystratum\_pgsql.helper.PgSqlDataTypeHelper module
    :undoc-members:
    :show-inheritance:
 
+pystratum\_pgsql.helper.PgSqlRoutineLoaderHelper module
+-------------------------------------------------------
+
+.. automodule:: pystratum_pgsql.helper.PgSqlRoutineLoaderHelper
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 Module contents
 ---------------

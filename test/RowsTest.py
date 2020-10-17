@@ -1,8 +1,4 @@
-"""
-PyStratum
-"""
-from pystratum_test.TestDataLayer import TestDataLayer
-from pystratum_test.StratumTestCase import StratumTestCase
+from test.StratumTestCase import StratumTestCase
 
 
 class RowsTest(StratumTestCase):
@@ -11,7 +7,7 @@ class RowsTest(StratumTestCase):
         """
         Stored routine with designation type rows must return an empty array when no rows are selected.
         """
-        ret = TestDataLayer.tst_test_rows1(0)
+        ret = self._dl.tst_test_rows1(0)
         self.assertIsInstance(ret, list)
         self.assertEqual(0, len(ret))
 
@@ -20,7 +16,7 @@ class RowsTest(StratumTestCase):
         """
         Stored routine with designation type rows must return an array with 1 row when only 1 row is selected.
         """
-        ret = TestDataLayer.tst_test_rows1(1)
+        ret = self._dl.tst_test_rows1(1)
         self.assertIsInstance(ret, list)
         self.assertEqual(1, len(ret))
 
@@ -29,7 +25,7 @@ class RowsTest(StratumTestCase):
         """
         Stored routine with designation type rows must return an array with 3 rows when 3 rows are selected.
         """
-        ret = TestDataLayer.tst_test_rows1(3)
+        ret = self._dl.tst_test_rows1(3)
         self.assertIsInstance(ret, list)
         self.assertEqual(3, len(ret))
 

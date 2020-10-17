@@ -1,10 +1,7 @@
-"""
-PyStratum
-"""
 import abc
-from typing import Dict, Any
+from typing import Any, Dict
 
-from pystratum.wrapper.Wrapper import Wrapper
+from pystratum_common.wrapper.Wrapper import Wrapper
 
 
 class PgSqlWrapper(Wrapper):
@@ -60,7 +57,7 @@ class PgSqlWrapper(Wrapper):
         raise NotImplementedError()
 
     # ------------------------------------------------------------------------------------------------------------------
-    def _generate_command(self, routine):
+    def _generate_command(self, routine: Dict[str, Any]) -> str:
         """
         Returns a SQL-statement for calling a stored routine.
 
@@ -75,7 +72,7 @@ class PgSqlWrapper(Wrapper):
 
         parameter_count = 0
         for parameter in routine['parameters']:
-            re_type = self._get_parameter_format_specifier(parameter)
+            re_type = self._get_parameter_format_specifier(parameter['data_type'])
             if parameters:
                 parameters += ', '
                 placeholders += ', '
@@ -95,11 +92,11 @@ class PgSqlWrapper(Wrapper):
 
     # ------------------------------------------------------------------------------------------------------------------
     @staticmethod
-    def _get_parameter_format_specifier(parameter):
+    def _get_parameter_format_specifier(data_type: str) -> str:
         """
         Returns the appropriate format specifier for a parameter type.
 
-        :param dict[str,str] parameter: The parameter metadata.
+        :param str data_type: The parameter type.
 
         :rtype: str
         """
@@ -119,9 +116,9 @@ class PgSqlWrapper(Wrapper):
                   'bytea':                       '%s::bytea',
                   'text':                        '%s::text'}
 
-        if parameter['data_type'] in lookup:
-            return lookup[parameter['data_type']]
+        if data_type in lookup:
+            return lookup[data_type]
 
-        raise Exception('Unexpected data type {0!s}.'.format(parameter['data_type']))
+        raise Exception('Unexpected data type {0!s}.'.format(data_type))
 
 # ---------------------------------------------------------------------------------------------------------------------

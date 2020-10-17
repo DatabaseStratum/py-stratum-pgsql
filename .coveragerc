@@ -2,7 +2,7 @@
 branch = True
 data_file = .coverage
 source = pystratum_pgsql
-omit = pystratum_test/*
+omit = test/*
 
 [report]
 # Regexes for lines to exclude from consideration
@@ -28,4 +28,4 @@ ignore_errors = True
 output = coverage.xml
 
 [html]
-directory = pystratum_test/html/
+directory = test/html/

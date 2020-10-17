@@ -14,7 +14,10 @@ services:
 install:
   - cd $HOME
   - pip3 install psycopg2-binary
-  - pip3 install pystratum
+  - pip3 install PyStratum-Backend
+  - pip3 install PyStratum-Cli
+  - pip3 install PyStratum-Common
+  - pip3 install PyStratum-Middle
 
 before_script:
   - psql --version
@@ -24,4 +27,4 @@ before_script:
 
 script: 
   - cd $TRAVIS_BUILD_DIR
-  - python3 -m unittest discover -s pystratum_test -p *Test.py
+  - python3 -m unittest discover -s test -p *Test.py
