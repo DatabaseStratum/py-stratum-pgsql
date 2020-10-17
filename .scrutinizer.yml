@@ -21,7 +21,7 @@ build:
           - sudo -u postgres psql -c "create database test owner=test;"
           - sudo -u postgres psql -c "create schema test authorization test;" -U postgres -d test
         override:
-          - command: python3 -m unittest discover -s test -p *Test.py
+          - command: coverage3 run -m unittest discover -s test -p *Test.py
             coverage:
               file: '.coverage'
               config_file: '.coveragerc'
