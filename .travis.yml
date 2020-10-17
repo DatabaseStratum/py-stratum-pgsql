@@ -12,7 +12,6 @@ services:
   - postgresql
   
 install:
-  - cd $HOME
   - pip3 install psycopg2-binary
   - pip3 install PyStratum-Backend
   - pip3 install PyStratum-Cli
@@ -24,8 +23,8 @@ before_script:
   - psql -c "create user test with password 'test';" -U postgres
   - psql -c "create database test owner=test;" -U postgres
   - psql -c "create schema test authorization test;" -U postgres test
-  - cat test/ddl/create_tables.sql | psql -Utest test
 
 script: 
   - cd $TRAVIS_BUILD_DIR
+  - cat test/ddl/create_tables.sql | psql -Utest test
   - python3 -m unittest discover -s test -p *Test.py
