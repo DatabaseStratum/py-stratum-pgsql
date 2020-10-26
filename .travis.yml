@@ -12,11 +12,7 @@ services:
   - postgresql
   
 install:
-  - pip3 install psycopg2-binary
-  - pip3 install PyStratum-Backend
-  - pip3 install PyStratum-Cli
-  - pip3 install PyStratum-Common
-  - pip3 install PyStratum-Middle
+  - pip3 install -r requirements.txt
 
 before_script:
   - psql --version
